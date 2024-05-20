@@ -12,8 +12,13 @@ import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@
 import PlayerTables from "@/components/PlayerTables";
 import {ListOfPlayers} from "@/enums/ListOfPlayers";
 import {Button} from "@nextui-org/button";
-import {useDisclosure} from "@nextui-org/react";
+import {Tooltip, useDisclosure} from "@nextui-org/react";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
+
+import {
+	DeleteIcon
+} from "@/components/icons";
+import RemovePlayerModal from "@/components/RemovePlayerModal";
 
 /*async function getPlayers(){
 	const response = await , {
@@ -28,6 +33,8 @@ export default function Home() {
 
 	const [players, setPlayers] = useState([]);
 	const [playersApplies, setPlayersApplies] = useState([]);
+
+	const maxPlayers = 4
 
 	useEffect(() => {
 
@@ -44,7 +51,12 @@ export default function Home() {
 
 				console.log("playerappppppppkies")
 				console.log(data)
+				let count = 0;
 				for(let obj of data){
+					obj.count = ++count
+					if(count == maxPlayers){
+						count = 0
+					}
 					obj.vorname = obj.player.vorname
 					obj.nachname = obj.player.nachname
 				}
@@ -54,10 +66,10 @@ export default function Home() {
 
 
 
-	const maxPlayers = 4
+
 	const columns = [
 		{
-			key: "id",
+			key: "count",
 			label: "NR"
 		},
 		{
@@ -71,15 +83,15 @@ export default function Home() {
 		{
 			key: "instant",
 			label: "Anmeldezeitpunkt"
-		},
+		}
 	];
 	const rows = ["asdfasd", "affdfdfd", "FAFasdfas"]
 
 	return (
 		<section>
 			<div>
-
 				<ApplyPlayerModal players={players}/>
+				<RemovePlayerModal players={players}/>
                 <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
 				<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies}/>
 			</div>

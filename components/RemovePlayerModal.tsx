@@ -9,13 +9,14 @@ import {
     ModalFooter,
     Button,
     useDisclosure,
-    Select, SelectItem, Autocomplete, AutocompleteItem
+    Select, SelectItem, Autocomplete, AutocompleteItem, Tooltip
 } from "@nextui-org/react";
 import {map} from "yaml/dist/schema/common/map";
 import {Simulate} from "react-dom/test-utils";
 import change = Simulate.change;
+import {DeleteIcon} from "@/components/icons";
 
-export default function ApplyPlayerModal(players) {
+export default function RemovePlayerModal(players) {
 
 
     console.log("players applic modeal")
@@ -49,7 +50,7 @@ export default function ApplyPlayerModal(players) {
         const formData = new FormData(event.currentTarget)
         console.log(formData)
 
-        const response = await fetch('http://localhost:8080/playersapplies', {
+        const response = await fetch('http://localhost:8080/removeplayer', {
             method: 'POST',
             body: formData,
         })
@@ -61,15 +62,15 @@ export default function ApplyPlayerModal(players) {
     return (
         <section>
             <div>
-                <Button color="primary" variant="ghost" onPress={onOpen}>
-                    Anmelden
+                <Button color="danger" variant="ghost" onPress={onOpen}>
+                    Spieler abmelden
                 </Button>
                 <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} isKeyboardDismissDisabled={true}>
                     <ModalContent>
                         {(onClose) => (
                             <>
                                 <form onSubmit={onSubmit}>
-                                    <ModalHeader className="flex flex-col gap-1">Spieler anmelden</ModalHeader>
+                                    <ModalHeader className="flex flex-col gap-1">Spieler löschen</ModalHeader>
                                     <ModalBody>
 
                                         <Select selectionMode="multiple" name="selectedPlayers">
@@ -101,7 +102,7 @@ export default function ApplyPlayerModal(players) {
                                             Abbrechen
                                         </Button>
                                         <Button color="primary" type="submit" variant="ghost">
-                                            Anmelden
+                                            Löschen
                                         </Button>
                                     </ModalFooter>
                                 </form>

@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-	name: "Next.js + NextUI",
+	name: "SoccerNexus",
 	description: "Make beautiful websites regardless of your design experience.",
 	navItems: [
 		{
@@ -12,7 +12,7 @@ export const siteConfig = {
       label: "Spielerliste",
       href: "/registerNewPlayer",
     },
-    {
+    /*{
       label: "Pricing",
       href: "/pricing",
     },
@@ -23,7 +23,7 @@ export const siteConfig = {
     {
       label: "About",
       href: "/about",
-    }
+    }*/
 	],
 	navMenuItems: [
 		{
@@ -60,10 +60,11 @@ export const siteConfig = {
 		},
 	],
 	links: {
-		github: "https://github.com/nextui-org/nextui",
+		github: "https://github.com/ToCoMi-P/soccer-nexus-ui.git",
 		twitter: "https://twitter.com/getnextui",
 		docs: "https://nextui.org",
 		discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev"
+    	sponsor: "https://paypal.me/tommytrancong3?country.x=DE&locale.x=de_DE",
+
 	},
 };
