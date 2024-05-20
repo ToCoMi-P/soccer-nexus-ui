@@ -13,27 +13,8 @@ import {
 import {ListOfPlayers} from "@/enums/ListOfPlayers";
 import {start} from "repl";
 
-export default function PlayerTables({nameOfTable, startRange, endRange}) {
+export default function PlayerTables({nameOfTable, startRange, endRange, columns, rows}) {
 
-    const columns = [
-        {
-            key: "NR",
-            label: "NR"
-        },
-        {
-            key: "Vorname",
-            label: "Vorname"
-        },
-        {
-            key: "Nachname",
-            label: "Nachname"
-        },
-        {
-            key: "Anmeldezeitpunkt",
-            label: "Anmeldezeitpunkt"
-        },
-    ];
-    const rows = ["asdf", "asdffsdaf", "ajsfjsdkfl", "testskljlksjet", "jjkjfiewjofhsfd"]
     const dataList = rows.slice(startRange, endRange)
 
 
