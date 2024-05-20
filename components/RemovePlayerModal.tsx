@@ -16,7 +16,7 @@ import {Simulate} from "react-dom/test-utils";
 import change = Simulate.change;
 import {DeleteIcon} from "@/components/icons";
 
-export default function RemovePlayerModal(players) {
+export default function RemovePlayerModal(players: any) {
 
 
     console.log("players applic modeal")
@@ -28,8 +28,8 @@ export default function RemovePlayerModal(players) {
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
-    const maxPlayersToSelect = 10;
-    const maxPlayerNumberToSelect = [...Array(maxPlayersToSelect).keys()].slice(1, maxPlayersToSelect)
+    //const maxPlayersToSelect = 10;
+    //const maxPlayerNumberToSelect = [...Array(maxPlayersToSelect).keys()].slice(1, maxPlayersToSelect)
 
     const BASE_URL = "http://localhost:8080";
 
@@ -74,7 +74,7 @@ export default function RemovePlayerModal(players) {
                                     <ModalBody>
 
                                         <Select selectionMode="multiple" name="selectedPlayers">
-                                            {players.players.map((player) => {
+                                            {players.players.map((player: any) => {
                                                 return <SelectItem key={player.id}  value={`${player.vorname} ${player.nachname}`}>{`${player.vorname} ${player.nachname}`}</SelectItem>;
                                             })}
                                         </Select>

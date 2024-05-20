@@ -10,10 +10,9 @@ import {
     getKeyValue,
     Pagination
 } from "@nextui-org/react";
-import {ListOfPlayers} from "@/enums/ListOfPlayers";
 import {start} from "repl";
 
-export default function PlayerTables({nameOfTable, startRange, endRange, columns, rows}) {
+export default function PlayerTables({nameOfTable, startRange, endRange, columns, rows} : {nameOfTable: string, startRange: number, endRange: number, columns: any, rows: any}) {
 
     const dataList = rows.slice(startRange, endRange)
 
@@ -26,12 +25,12 @@ export default function PlayerTables({nameOfTable, startRange, endRange, columns
             >
 
                 <TableHeader>
-                    {columns.map((column) =>
+                    {columns.map((column: any) =>
                         <TableColumn key={column.key}>{column.label}</TableColumn>
                     )}
                 </TableHeader>
                 <TableBody>
-                    {dataList.map((row) =>
+                    {dataList.map((row: any) =>
                         <TableRow key={dataList.key}>
                             {(columnKey) => <TableCell>{getKeyValue(row, columnKey)}</TableCell>}
                         </TableRow>

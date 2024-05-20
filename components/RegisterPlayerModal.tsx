@@ -20,8 +20,8 @@ export default function RegisterPlayerModal() {
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
-    const maxPlayersToSelect = 10;
-    const maxPlayerNumberToSelect = [...Array(maxPlayersToSelect).keys()].slice(1, maxPlayersToSelect)
+    //const maxPlayersToSelect = 10;
+    //const maxPlayerNumberToSelect = [...Array(maxPlayersToSelect).keys()].slice(1, maxPlayersToSelect)
 
 
 

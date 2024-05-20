@@ -213,7 +213,7 @@ export const NextUILogo: React.FC<IconSvgProps> = (props) => {
   );
 };
 
-export const DeleteIcon = (props) => (
+export const DeleteIcon = (props: IconSvgProps) => (
 	<svg
 		aria-hidden="true"
 		fill="none"
