@@ -10,7 +10,6 @@ import { GithubIcon } from "@/components/icons";
 import React, {useEffect, useState} from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/table";
 import PlayerTables from "@/components/PlayerTables";
-import {ListOfPlayers} from "@/enums/ListOfPlayers";
 import {Button} from "@nextui-org/button";
 import {Tooltip, useDisclosure} from "@nextui-org/react";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
