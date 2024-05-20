@@ -62,7 +62,7 @@ export default function RegisterPlayerModal() {
 
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Button color="danger" variant="light" onPress={onClose} variant="ghost">
+                                        <Button color="danger" onPress={onClose} variant="ghost">
                                             Abbrechen
                                         </Button>
                                         <Button color="primary" variant="ghost" type="submit">
