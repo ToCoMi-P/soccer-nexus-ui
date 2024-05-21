@@ -89,10 +89,10 @@ export default function Home() {
 	return (
 		<section>
 			<div>
-				<ApplyPlayerModal players={players}/>
-				<RemovePlayerModal players={players}/>
-                <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
-				<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies}/>
+				{/*<ApplyPlayerModal players={...(players.length > 0 ? {players}: {})}/>
+				<RemovePlayerModal players={...(players.length > 0 ? {players}: {})}/>*/}
+                <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={...playersApplies}/>
+				<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={...playersApplies}/>
 			</div>
 
 

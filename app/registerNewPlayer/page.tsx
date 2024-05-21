@@ -37,7 +37,7 @@ export default function RegisterNewPlayerPage() {
 
 	return (
 		<div>
-			<RegisterPlayerModal/>
+			{/*<RegisterPlayerModal/>*/}
 
 			<PlayerTables nameOfTable="Tabelle aller Spieler" startRange={0} endRange={200} columns={columns} rows={players}></PlayerTables>
 		</div>
