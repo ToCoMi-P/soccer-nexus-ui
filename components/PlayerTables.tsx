@@ -12,20 +12,20 @@ import {
 } from "@nextui-org/react";
 import {start} from "repl";
 
-export default function PlayerTables({nameOfTable, startRange, endRange, columns, rows} : {nameOfTable: string, startRange: number, endRange: number, columns: any, rows: any}) {
+export default function PlayerTables(props) {
 
-    const dataList = rows.slice(startRange, endRange)
+    const dataList = props.rows.slice(props.startRange, props.endRange)
 
 
     return (
         <div>
-            {nameOfTable} ({dataList.length})
+            {props.nameOfTable} ({dataList.length})
             <Table aria-label="Example static collection table"
                    selectionMode="single"
             >
 
                 <TableHeader>
-                    {columns.map((column: any) =>
+                    {props.columns.map((column: any) =>
                         <TableColumn key={column.key}>{column.label}</TableColumn>
                     )}
                 </TableHeader>

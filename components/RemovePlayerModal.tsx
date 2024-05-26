@@ -11,10 +11,6 @@ import {
     useDisclosure,
     Select, SelectItem, Autocomplete, AutocompleteItem, Tooltip
 } from "@nextui-org/react";
-import {map} from "yaml/dist/schema/common/map";
-import {Simulate} from "react-dom/test-utils";
-import change = Simulate.change;
-import {DeleteIcon} from "@/components/icons";
 
 export default function RemovePlayerModal(players: any) {
 

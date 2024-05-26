@@ -11,14 +11,9 @@ import {
     useDisclosure,
     Select, SelectItem, Autocomplete, AutocompleteItem
 } from "@nextui-org/react";
-import {map} from "yaml/dist/schema/common/map";
-import {Simulate} from "react-dom/test-utils";
-import change = Simulate.change;
 
 export default function ApplyPlayerModal(players: any) {
 
-
-    console.log("players applic modeal")
 
     //const [selectPlayerNumber, setValue] = useState()
     //const [selectPlayerNumberList, changeTheList] = useState([])

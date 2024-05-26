@@ -9,7 +9,8 @@ export default function RegisterNewPlayerPage() {
 
 	const BASE_URL = "http://localhost:8080";
 
-	const [players, setPlayers] = useState([]);
+	const [players, setPlayers] = useState(null);
+	const [isLoading, setLoading] = useState(true)
 
 	useEffect(() => {
 
@@ -17,7 +18,9 @@ export default function RegisterNewPlayerPage() {
 			.then(response => response.json())
 			.then(data => {
 				setPlayers(data)
+				setLoading(false)
 			})
+			.catch(error => console.log(error));
 	}, [])
 
 	const columns = [
@@ -35,9 +38,12 @@ export default function RegisterNewPlayerPage() {
 		},
 	];
 
+	if (isLoading) return <p>Loading...</p>
+    if (!players) return <p>no Players</p>
+
 	return (
 		<div>
-			{/*<RegisterPlayerModal/>*/}
+			<RegisterPlayerModal/>
 
 			<PlayerTables nameOfTable="Tabelle aller Spieler" startRange={0} endRange={200} columns={columns} rows={players}></PlayerTables>
 		</div>

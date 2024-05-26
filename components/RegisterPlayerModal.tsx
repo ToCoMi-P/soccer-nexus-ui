@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import React, {createElement, FormEvent, useState} from "react";
 import {
@@ -11,9 +11,6 @@ import {
     useDisclosure,
     Select, SelectItem, Autocomplete, AutocompleteItem, Input
 } from "@nextui-org/react";
-import {map} from "yaml/dist/schema/common/map";
-import {Simulate} from "react-dom/test-utils";
-import change = Simulate.change;
 
 export default function RegisterPlayerModal() {
 
@@ -29,7 +26,6 @@ export default function RegisterPlayerModal() {
         event.preventDefault()
 
         const formData = new FormData(event.currentTarget)
-        console.log(formData)
 
         const response = await fetch('http://localhost:8080/players', {
             method: 'POST',
@@ -40,7 +36,7 @@ export default function RegisterPlayerModal() {
 
 
         // Handle response if necessary
-        //const data = await response.json()
+        const data = await response.json()
     }
 
 
