@@ -12,7 +12,7 @@ import {
 } from "@nextui-org/react";
 import {start} from "repl";
 
-export default function PlayerTables(props) {
+export default function PlayerTables(props: any) {
 
     const dataList = props.rows.slice(props.startRange, props.endRange)
 
