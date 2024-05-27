@@ -25,7 +25,7 @@ export default function ApplyPlayerModal(players: any) {
     //const maxPlayersToSelect = 10;
     //const maxPlayerNumberToSelect = [...Array(maxPlayersToSelect).keys()].slice(1, maxPlayersToSelect)
 
-    const BASE_URL = "http://localhost:8080";
+    //const BASE_URL = "http://localhost:8080";
 
     /*const [players, setPlayers] = useState([]);
 
@@ -44,7 +44,7 @@ export default function ApplyPlayerModal(players: any) {
         const formData = new FormData(event.currentTarget)
         console.log(formData)
 
-        const response = await fetch('http://localhost:8080/playersapplies', {
+        const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/playersapplies', {
             method: 'POST',
             body: formData,
         })

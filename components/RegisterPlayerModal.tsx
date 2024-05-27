@@ -27,7 +27,7 @@ export default function RegisterPlayerModal() {
 
         const formData = new FormData(event.currentTarget)
 
-        const response = await fetch('http://localhost:8080/players', {
+        const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + 'players', {
             method: 'POST',
             body: formData,
         })

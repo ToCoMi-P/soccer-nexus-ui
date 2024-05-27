@@ -7,14 +7,14 @@ import PlayerTables from "@/components/PlayerTables";
 
 export default function RegisterNewPlayerPage() {
 
-	const BASE_URL = "http://localhost:8080";
+	//const BASE_URL = "http://localhost:8080";
 
 	const [players, setPlayers] = useState(null);
 	const [isLoading, setLoading] = useState(true)
 
 	useEffect(() => {
 
-		fetch( `${BASE_URL}/players`)
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/players`)
 			.then(response => response.json())
 			.then(data => {
 				setPlayers(data)
