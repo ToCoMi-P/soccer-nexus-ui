@@ -37,7 +37,7 @@ export default function Home() {
 
 	useEffect(() => {
 
-		fetch( `${BASE_URL}/players`)
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/players`)
 			.then(response => {
 				return response.json()
 			})
@@ -45,7 +45,7 @@ export default function Home() {
 				setPlayers(data)
 			})
 
-		fetch( `${BASE_URL}/playersappliesnextmonday`)
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
 			.then(response => response.json())
 			.then(data => {
 				setPlayersApplies(data)

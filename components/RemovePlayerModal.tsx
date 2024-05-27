@@ -14,9 +14,6 @@ import {
 
 export default function RemovePlayerModal(players: any) {
 
-
-    console.log("players applic modeal")
-
     //const [selectPlayerNumber, setValue] = useState()
     //const [selectPlayerNumberList, changeTheList] = useState([])
     const [selectedPlayers, setSelectedPlayers] = useState(null)
