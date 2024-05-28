@@ -54,13 +54,13 @@ export const Navbar = () => {
 	return (
 		<NextUINavbar maxWidth="xl" position="sticky">
 			<NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-				<NavbarBrand as="li" className="gap-3 max-w-fit">
+				{/*<NavbarBrand as="li" className="gap-3 max-w-fit">
 					<NextLink className="flex justify-start items-center gap-1" href="/">
 						<Logo />
 						<p className="font-bold text-inherit">ACME</p>
 					</NextLink>
-				</NavbarBrand>
-				<ul className="hidden lg:flex gap-4 justify-start ml-2">
+				</NavbarBrand>*/}
+				<ul className="md:flex gap-4 justify-start ml-2">
 					{siteConfig.navItems.map((item) => (
 						<NavbarItem key={item.href}>
 							<NextLink
@@ -99,12 +99,12 @@ export const Navbar = () => {
 					<Button
             isExternal
 						as={Link}
-						className="text-sm font-normal text-default-600 bg-default-100"
+						className="sm:hidden md:flex text-sm font-normal text-default-600 bg-default-100"
 						href={siteConfig.links.sponsor}
 						startContent={<HeartFilledIcon className="text-danger" />}
 						variant="flat"
 					>
-						Sponsor
+						Bezahlen
 					</Button>
 				</NavbarItem>
 			</NavbarContent>
@@ -119,17 +119,16 @@ export const Navbar = () => {
 
 			<NavbarMenu>
 				{searchInput}
-				<div className="mx-4 mt-2 flex flex-col gap-2">
+				<div className="mx-4 mt-2 gap-2">
 					{siteConfig.navMenuItems.map((item, index) => (
 						<NavbarMenuItem key={`${item}-${index}`}>
-							<NextLink href={item.href} className="lg" color={
+							<NextLink href={item.href} color={
 								index === 2
 									? "primary"
 									: index === siteConfig.navMenuItems.length - 1
 										? "danger"
 										: "foreground"
 							}
-									  size="lg"
 							>
 								{item.label}
 							</NextLink>
