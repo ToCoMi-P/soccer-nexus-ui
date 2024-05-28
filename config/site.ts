@@ -27,18 +27,14 @@ export const siteConfig = {
 	],
 	navMenuItems: [
 		{
-			label: "Profile",
-			href: "/profile",
+			label: "Home",
+			href: "/",
 		},
 		{
-			label: "Dashboard",
-			href: "/dashboard",
+			label: "Spielerliste",
+			href: "/registerNewPlayer",
 		},
-		{
-			label: "Projects",
-			href: "/projects",
-		},
-		{
+		/*{
 			label: "Team",
 			href: "/team",
 		},
@@ -57,7 +53,7 @@ export const siteConfig = {
 		{
 			label: "Logout",
 			href: "/logout",
-		},
+		},*/
 	],
 	links: {
 		github: "https://github.com/ToCoMi-P/soccer-nexus-ui.git",
