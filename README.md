@@ -14,6 +14,9 @@ This is a template for creating applications using Next.js 14 (app directory) an
 
 ## How to Use
 
+.env.local anlegen mit der richtigen Ressource verknüpfen
+application.properties anpassen der DB-
+
 ### Use the template with create-next-app
 
 To create a new project based on this template using `create-next-app`, run the following command:
