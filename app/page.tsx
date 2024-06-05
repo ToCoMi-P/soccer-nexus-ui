@@ -11,13 +11,14 @@ import React, {useEffect, useState} from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/table";
 import PlayerTables from "@/components/PlayerTables";
 import {Button} from "@nextui-org/button";
-import {Tooltip, useDisclosure} from "@nextui-org/react";
+import {Divider, Select, SelectItem, Tooltip, useDisclosure} from "@nextui-org/react";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 
 import {
 	DeleteIcon
 } from "@/components/icons";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
+import WarteMeldung from "@/components/WarteMeldung";
 
 /*async function getPlayers(){
 	const response = await , {
@@ -32,8 +33,7 @@ export default function Home() {
 
 	const [players, setPlayers] = useState([]);
 	const [playersApplies, setPlayersApplies] = useState([]);
-
-	const maxPlayers = 4
+	const [maxPlayers, setMaxPlayers] = useState(26)
 
 	useEffect(() => {
 
@@ -50,6 +50,7 @@ export default function Home() {
 			.then(data => {
 				setPlayersApplies(data)
 
+				// TODO: wenn grenze der Nachrücker angepasst wird, sollte sich auch der Datensatz dementsprechend anpassen
 				let count = 0;
 				for(let obj of data){
 					obj.count = ++count
@@ -60,7 +61,12 @@ export default function Home() {
 					obj.nachname = obj.player.nachname
 				}
 			})
-	}, [])
+	}, [maxPlayers])
+
+	// TODO: Type vom Parameter konkretisieren
+	function setLimit(event: any){
+		setMaxPlayers(event.target.value)
+	}
 
 
 
@@ -89,6 +95,19 @@ export default function Home() {
 	return (
 		<section>
 			<div>
+				<WarteMeldung/>
+				<Select
+					label="Grenze der Nachrücker"
+					className="max-w-xs"
+					onChange={setLimit}
+					defaultSelectedKeys={[26]}
+				>
+					<SelectItem key={15}>15</SelectItem>
+					<SelectItem key={24}>24</SelectItem>
+					<SelectItem key={26}>26</SelectItem>
+					<SelectItem key={30}>30</SelectItem>
+					<SelectItem key={36}>36</SelectItem>
+				</Select>
 				<ApplyPlayerModal players={players}/>
 				<RemovePlayerModal players={players}/>
                 <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
