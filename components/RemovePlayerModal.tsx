@@ -1,5 +1,3 @@
-"use client";
-
 import React, {createElement, FormEvent, useEffect, useState} from "react";
 import {
     Modal,
@@ -63,7 +61,7 @@ export default function RemovePlayerModal(players: any) {
                         {(onClose) => (
                             <>
                                 <form onSubmit={onSubmit}>
-                                    <ModalHeader className="flex flex-col gap-1">Spieler löschen</ModalHeader>
+                                    <ModalHeader className="flex flex-col gap-1">Spieler abmelden</ModalHeader>
                                     <ModalBody>
 
                                         <Select selectionMode="multiple" name="selectedPlayers">

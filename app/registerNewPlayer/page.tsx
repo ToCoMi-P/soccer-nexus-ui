@@ -1,9 +1,9 @@
-"use client";
-import { title } from "@/components/primitives";
-import {Button, Input} from "@nextui-org/react";
+"use client"
+
 import React, {useEffect, useState} from "react";
 import RegisterPlayerModal from "@/components/RegisterPlayerModal";
 import PlayerTables from "@/components/PlayerTables";
+import WarteMeldung from "@/components/WarteMeldung";
 
 export default function RegisterNewPlayerPage() {
 
@@ -38,14 +38,14 @@ export default function RegisterNewPlayerPage() {
 		},
 	];
 
-	if (isLoading) return <p>Loading...</p>
+	if (isLoading) return <p>Loading...<WarteMeldung/></p>
     if (!players) return <p>no Players</p>
 
 	return (
 		<div>
 			<RegisterPlayerModal/>
 
-			<PlayerTables nameOfTable="Tabelle aller Spieler" startRange={0} endRange={200} columns={columns} rows={players}></PlayerTables>
+			<PlayerTables nameOfTable="Tabelle aller bereits registrierten Spieler" startRange={0} endRange={200} columns={columns} rows={players}></PlayerTables>
 		</div>
 	);
 }

@@ -1,5 +1,3 @@
-"use client"
-
 import React, {createElement, FormEvent, useState} from "react";
 import {
     Modal,
