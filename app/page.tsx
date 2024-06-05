@@ -62,9 +62,10 @@ export default function Home() {
 					obj.nachname = obj.player.nachname
 				}
 			})
-	}, [])
+	}, [maxPlayers])
 
-	function setLimit(event){
+	// TODO: Type vom Parameter konkretisieren
+	function setLimit(event: any){
 		setMaxPlayers(event.target.value)
 	}
 
@@ -108,7 +109,6 @@ export default function Home() {
 					<SelectItem key={30}>30</SelectItem>
 					<SelectItem key={36}>36</SelectItem>
 				</Select>
-				<p>{maxPlayers}</p>
 				<ApplyPlayerModal players={players}/>
 				<RemovePlayerModal players={players}/>
                 <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
