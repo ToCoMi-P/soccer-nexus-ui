@@ -13,7 +13,6 @@ import PlayerTables from "@/components/PlayerTables";
 import {Button} from "@nextui-org/button";
 import {Divider, Select, SelectItem, Tooltip, useDisclosure} from "@nextui-org/react";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
-import Network_Error from "@/app/network_error";
 
 import {
 	DeleteIcon
