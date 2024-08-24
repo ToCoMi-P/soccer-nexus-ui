@@ -22,6 +22,7 @@
 		"@nextui-org/theme": "2.2.0",
 		"@react-aria/ssr": "^3.9.2",
 		"@react-aria/visually-hidden": "^3.8.10",
+		"@supabase/supabase-js": "^2.45.1",
 		"@types/node": "20.5.7",
 		"@types/react": "18.2.21",
 		"@types/react-dom": "18.2.7",

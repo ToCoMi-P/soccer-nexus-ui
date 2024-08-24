@@ -19,6 +19,9 @@ import {
 } from "@/components/icons";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
+import Player_Applies from "@/app/lib/supabase/API/Player_Applies";
+import Players from "@/app/lib/supabase/API/Players";
+
 
 /*async function getPlayers(){
 	const response = await , {
@@ -37,31 +40,24 @@ export default function Home() {
 
 	useEffect(() => {
 
-		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/players`)
-			.then(response => {
-				return response.json()
-			})
-			.then(data => {
-				setPlayers(data)
-			})
+		Players.getPlayers().then(({data}) => {
+			setPlayers(data)
+		})
 
-		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
-			.then(response => response.json())
-			.then(data => {
-				setPlayersApplies(data)
-
-				// TODO: wenn grenze der Nachrücker angepasst wird, sollte sich auch der Datensatz dementsprechend anpassen
-				let count = 0;
-				for(let obj of data){
-					obj.count = ++count
-					if(count == maxPlayers){
-						count = 0
-					}
-					obj.vorname = obj.player.vorname
-					obj.nachname = obj.player.nachname
+		Player_Applies.getPlayerAppliesJoint().then(({data}) => {
+			let count = 0;
+			for (let obj of data) {
+				obj.count = ++count
+				if (count == maxPlayers) {
+					count = 0
 				}
-			})
-	}, [maxPlayers])
+				obj.vorname = obj.players.vorname
+				obj.nachname = obj.players.nachname
+			}
+
+			setPlayersApplies(data)
+		})
+	},[])
 
 	// TODO: Type vom Parameter konkretisieren
 	function setLimit(event: any){
@@ -86,7 +82,7 @@ export default function Home() {
 			label: "Nachname"
 		},
 		{
-			key: "instant",
+			key: "apply_timestamp",
 			label: "Anmeldezeitpunkt"
 		}
 	];
