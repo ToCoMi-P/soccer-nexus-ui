@@ -16,8 +16,8 @@ export default function RegisterNewPlayerPage() {
 
 	useEffect(() => {
 
-		Players.getPlayers().then((data: any) => {
-			setPlayers(data)
+		Players.getPlayers().then((res: any) => {
+			setPlayers(res.data)
 			setLoading(false)
 		})
 
@@ -38,7 +38,7 @@ export default function RegisterNewPlayerPage() {
 		},
 	];
 
-	if (isLoading) return <div>Loading...<WarteMeldung/></div>
+	if (isLoading) return <div>Loading...</div>
     if (!players) return <div>no Players</div>
 
 	return (
