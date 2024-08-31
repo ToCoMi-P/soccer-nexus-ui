@@ -40,11 +40,11 @@ export default function Home() {
 
 	useEffect(() => {
 
-		Players.getPlayers().then(({data}) => {
+		Players.getPlayers().then((data: any) => {
 			setPlayers(data)
 		})
 
-		Player_Applies.getPlayerAppliesJoint().then(({data}) => {
+		Player_Applies.getPlayerAppliesJoint().then((data: any) => {
 			let count = 0;
 			for (let obj of data) {
 				obj.count = ++count
@@ -64,10 +64,6 @@ export default function Home() {
 		setMaxPlayers(event.target.value)
 	}
 
-
-
-
-
 	const columns = [
 		{
 			key: "count",
@@ -86,12 +82,11 @@ export default function Home() {
 			label: "Anmeldezeitpunkt"
 		}
 	];
-	const rows = ["asdfasd", "affdfdfd", "FAFasdfas"]
+
 
 	return (
 		<section>
 			<div>
-				<WarteMeldung/>
 				<Select
 					label="Grenze der Nachrücker"
 					className="max-w-xs"
