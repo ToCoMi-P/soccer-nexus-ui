@@ -24,10 +24,10 @@ export default function RegisterNewPlayerPage() {
 	}, [])
 
 	const columns = [
-		{
+		/*{
 			key: "id",
 			label: "NR"
-		},
+		},*/
 		{
 			key: "vorname",
 			label: "Vorname"
