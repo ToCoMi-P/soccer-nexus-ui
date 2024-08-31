@@ -21,6 +21,7 @@ import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
 import Player_Applies from "@/app/lib/supabase/API/Player_Applies";
 import Players from "@/app/lib/supabase/API/Players";
+import {PostgrestSingleResponse} from "@supabase/supabase-js";
 
 
 /*async function getPlayers(){
@@ -44,18 +45,24 @@ export default function Home() {
 			setPlayers(data)
 		})
 
-		Player_Applies.getPlayerAppliesJoint().then((data: any) => {
-			let count = 0;
-			for (let obj of data) {
-				obj.count = ++count
-				if (count == maxPlayers) {
-					count = 0
+		Player_Applies.getPlayerAppliesJoint().then((res) => {
+			if(res != null && res.data != null){
+				let data = res.data;
+				let count = 0;
+				for (let obj of data) {
+					// @ts-ignore
+					obj.count = ++count
+					if (count == maxPlayers) {
+						count = 0
+					}
+					// @ts-ignore
+					obj.vorname = obj.players.vorname
+					// @ts-ignore
+					obj.nachname = obj.players.nachname
 				}
-				obj.vorname = obj.players.vorname
-				obj.nachname = obj.players.nachname
+				// @ts-ignore
+				setPlayersApplies(data)
 			}
-
-			setPlayersApplies(data)
 		})
 	},[])
 

@@ -1,5 +1,6 @@
 import supabase from "@/app/lib/supabase/supabase_api";
 import {list} from "postcss";
+import {PostgrestSingleResponse} from "@supabase/supabase-js";
 
 const rest_endpoint: string = 'Player_Applies'
 
