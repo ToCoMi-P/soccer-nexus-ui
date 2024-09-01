@@ -14,6 +14,8 @@ import Player_Applies from "@/app/lib/supabase/API/Player_Applies";
 
 export default function ApplyPlayerModal(players: any) {
 
+    console.log("aplly", players)
+
     const [selectedPlayers, setSelectedPlayers] = useState(null)
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();

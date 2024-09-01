@@ -32,12 +32,16 @@ export default function Home() {
 
 	useEffect(() => {
 
-		Players.getPlayers().then((data: any) => {
-			setPlayers(data)
+		Players.getPlayers().then((res) => {
+			//@ts-ignore
+			setPlayers(res.data)
 		})
 
 		Player_Applies.getPlayerAppliesJoint().then((res) => {
+			console.log("resrsrser", res.data)
 			if(res != null && res.data != null){
+				console.log("res", res)
+				console.log("data", res.data)
 				let data = res.data;
 				let count = 0;
 				for (let obj of data) {
@@ -83,8 +87,10 @@ export default function Home() {
 
 
 	return (
+
 		<section>
-			<div>
+			{players && playersApplies &&
+				<div>
 				<Select
 					label="Grenze der Nachrücker"
 					className="max-w-xs"
@@ -102,6 +108,7 @@ export default function Home() {
                 <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
 				<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies}/>
 			</div>
+			}
 
 
 
