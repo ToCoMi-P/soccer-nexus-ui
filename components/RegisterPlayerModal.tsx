@@ -9,6 +9,7 @@ import {
     useDisclosure,
     Select, SelectItem, Autocomplete, AutocompleteItem, Input
 } from "@nextui-org/react";
+import Players from "@/app/lib/supabase/API/Players";
 
 export default function RegisterPlayerModal() {
 
@@ -25,16 +26,22 @@ export default function RegisterPlayerModal() {
 
         const formData = new FormData(event.currentTarget)
 
-        const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/players', {
+        const vornameInput: any = document.getElementById('Vorname')
+        const nachnameInput: any = document.getElementById('Nachname')
+
+        if(vornameInput.value && nachnameInput.value) {
+            const test = {vorname: vornameInput.value, nachname: nachnameInput.value}
+            console.log(test)
+            console.log(Players.addPlayer(test));
+        }
+
+
+        /*const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/players', {
             method: 'POST',
             body: formData,
-        })
+        })*/
 
-        window.location.reload();
-
-
-        // Handle response if necessary
-        const data = await response.json()
+       //window.location.reload();
     }
 
 
@@ -51,8 +58,8 @@ export default function RegisterPlayerModal() {
                                 <ModalHeader className="flex flex-col gap-1">Spieler anmelden</ModalHeader>
                                 <form onSubmit={onSubmit}>
                                     <ModalBody>
-                                            <Input label="Vorname" placeholder="Dein Vorname" name="vorname"/>
-                                            <Input label="Nachname" placeholder="Dein Nachname" name="nachname" />
+                                            <Input id={"Vorname"} label="Vorname" placeholder="Dein Vorname" name="vorname"/>
+                                            <Input id={"Nachname"} label="Nachname" placeholder="Dein Nachname" name="nachname" />
 
                                     </ModalBody>
                                     <ModalFooter>

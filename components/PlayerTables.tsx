@@ -18,7 +18,7 @@ export default function PlayerTables(props: any) {
     return (
         <div>
             {props.nameOfTable} ({dataList.length})
-            <Table aria-label="Example static collection table"
+            <Table key={"PlayerTable"} aria-label="Example static collection table"
                    selectionMode="single"
             >
 
