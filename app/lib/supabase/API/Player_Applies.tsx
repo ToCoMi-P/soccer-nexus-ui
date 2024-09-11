@@ -11,7 +11,7 @@ export default class Player_Applies {
     }
 
     static async getPlayerAppliesJoint() {
-        return supabase.from(rest_endpoint).select('id, date, apply_timestamp, players:player_id (id, nachname, vorname)')
+        return supabase.from(rest_endpoint).select('id, date, apply_timestamp, players:player_id (id, nachname, vorname)').order('apply_timestamp')
     }
 
     static async addPlayerApplies(listOfPlayers: any){
