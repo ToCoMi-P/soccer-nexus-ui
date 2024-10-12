@@ -4,8 +4,6 @@ import React, {useEffect, useState} from "react";
 import RegisterPlayerModal from "@/components/RegisterPlayerModal";
 import PlayerTables from "@/components/PlayerTables";
 import WarteMeldung from "@/components/WarteMeldung";
-import getPlayers from "@/app/lib/supabase/API/Players";
-import Players from "@/app/lib/supabase/API/Players";
 
 export default function RegisterNewPlayerPage() {
 
@@ -16,18 +14,20 @@ export default function RegisterNewPlayerPage() {
 
 	useEffect(() => {
 
-		Players.getPlayers().then((res: any) => {
-			setPlayers(res.data)
-			setLoading(false)
-		})
-
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/players`)
+			.then(response => response.json())
+			.then(data => {
+				setPlayers(data)
+				setLoading(false)
+			})
+			.catch(error => console.log(error));
 	}, [])
 
 	const columns = [
-		/*{
+		{
 			key: "id",
 			label: "NR"
-		},*/
+		},
 		{
 			key: "vorname",
 			label: "Vorname"
@@ -38,8 +38,8 @@ export default function RegisterNewPlayerPage() {
 		},
 	];
 
-	if (isLoading) return <div>Loading...</div>
-    if (!players) return <div>no Players</div>
+	if (isLoading) return <p>Loading...<WarteMeldung/></p>
+    if (!players) return <p>no Players</p>
 
 	return (
 		<div>

@@ -1,7 +1,6 @@
 "use client"
 import React, {useEffect, useState} from "react";
 import PlayerTables from "@/components/PlayerTables";
-import {Button} from "@nextui-org/button";
 import {Divider, Select, SelectItem, Tooltip, useDisclosure} from "@nextui-org/react";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 
@@ -10,10 +9,6 @@ import {
 } from "@/components/icons";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
-import Player_Applies from "@/app/lib/supabase/API/Player_Applies";
-import Players from "@/app/lib/supabase/API/Players";
-import {PostgrestSingleResponse} from "@supabase/supabase-js";
-
 
 /*async function getPlayers(){
 	const response = await , {
@@ -32,39 +27,40 @@ export default function Home() {
 
 	useEffect(() => {
 
-		Players.getPlayers().then((res) => {
-			//@ts-ignore
-			setPlayers(res.data)
-		})
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/players`)
+			.then(response => {
+				return response.json()
+			})
+			.then(data => {
+				setPlayers(data)
+			})
 
-		Player_Applies.getPlayerAppliesJoint().then((res) => {
-			console.log("resrsrser", res.data)
-			if(res != null && res.data != null){
-				console.log("res", res)
-				console.log("data", res.data)
-				let data = res.data;
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
+			.then(response => response.json())
+			.then(data => {
+				setPlayersApplies(data)
+
+				// TODO: wenn grenze der Nachrücker angepasst wird, sollte sich auch der Datensatz dementsprechend anpassen
 				let count = 0;
-				for (let obj of data) {
-					// @ts-ignore
+				for(let obj of data){
 					obj.count = ++count
-					if (count == maxPlayers) {
+					if(count == maxPlayers){
 						count = 0
 					}
-					// @ts-ignore
-					obj.vorname = obj.players.vorname
-					// @ts-ignore
-					obj.nachname = obj.players.nachname
+					obj.vorname = obj.player.vorname
+					obj.nachname = obj.player.nachname
 				}
-				// @ts-ignore
-				setPlayersApplies(data)
-			}
-		})
-	},[])
+			})
+	}, [maxPlayers])
 
 	// TODO: Type vom Parameter konkretisieren
 	function setLimit(event: any){
 		setMaxPlayers(event.target.value)
 	}
+
+
+
+
 
 	const columns = [
 		{
@@ -80,17 +76,16 @@ export default function Home() {
 			label: "Nachname"
 		},
 		{
-			key: "apply_timestamp",
+			key: "instant",
 			label: "Anmeldezeitpunkt"
 		}
 	];
-
+	const rows = ["asdfasd", "affdfdfd", "FAFasdfas"]
 
 	return (
-
 		<section>
-			{players && playersApplies &&
-				<div>
+			<div>
+				<WarteMeldung/>
 				<Select
 					label="Grenze der Nachrücker"
 					className="max-w-xs"
@@ -108,7 +103,6 @@ export default function Home() {
                 <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
 				<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies}/>
 			</div>
-			}
 
 
 

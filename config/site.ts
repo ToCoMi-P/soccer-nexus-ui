@@ -1,66 +1,66 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-    name: "SoccerNexus",
-    description: "Die revolutionäre App für unkomplizierte Fußballgruppenorganisation.",
-    navItems: [
-        {
-            label: "Startseite",
-            href: "/",
-        },
-        {
-            label: "Spielerliste",
-            href: "/registerNewPlayer",
-        },
-        /*{
-          label: "Pricing",
-          href: "/pricing",
-        },
-        {
-          label: "Blog",
-          href: "/blog",
-        },
-        {
-          label: "About",
-          href: "/about",
-        }*/
-    ],
-    navMenuItems: [
-        {
-            label: "Startseite",
-            href: "/",
-        },
-        {
-            label: "Spielerliste",
-            href: "/registerNewPlayer",
-        },
-        /*{
-            label: "Team",
-            href: "/team",
-        },
-        {
-            label: "Calendar",
-            href: "/calendar",
-        },
-        {
-            label: "Settings",
-            href: "/settings",
-        },
-        {
-            label: "Help & Feedback",
-            href: "/help-feedback",
-        },
-        {
-            label: "Logout",
-            href: "/logout",
-        },*/
-    ],
-    links: {
-        github: "https://github.com/ToCoMi-P/soccer-nexus-ui.git",
-        twitter: "https://twitter.com/getnextui",
-        docs: "https://nextui.org",
-        discord: "https://discord.gg/9b6yyZKmH4",
-        sponsor: "https://paypal.me/tommytrancong3?country.x=DE&locale.x=de_DE",
-
+	name: "SoccerNexus",
+	description: "Make beautiful websites regardless of your design experience.",
+	navItems: [
+		{
+			label: "Home",
+			href: "/",
+		},
+    {
+      label: "Spielerliste",
+      href: "/registerNewPlayer",
     },
+    /*{
+      label: "Pricing",
+      href: "/pricing",
+    },
+    {
+      label: "Blog",
+      href: "/blog",
+    },
+    {
+      label: "About",
+      href: "/about",
+    }*/
+	],
+	navMenuItems: [
+		{
+			label: "Home",
+			href: "/",
+		},
+		{
+			label: "Spielerliste",
+			href: "/registerNewPlayer",
+		},
+		/*{
+			label: "Team",
+			href: "/team",
+		},
+		{
+			label: "Calendar",
+			href: "/calendar",
+		},
+		{
+			label: "Settings",
+			href: "/settings",
+		},
+		{
+			label: "Help & Feedback",
+			href: "/help-feedback",
+		},
+		{
+			label: "Logout",
+			href: "/logout",
+		},*/
+	],
+	links: {
+		github: "https://github.com/ToCoMi-P/soccer-nexus-ui.git",
+		twitter: "https://twitter.com/getnextui",
+		docs: "https://nextui.org",
+		discord: "https://discord.gg/9b6yyZKmH4",
+    	sponsor: "https://paypal.me/tommytrancong3?country.x=DE&locale.x=de_DE",
+
+	},
 };

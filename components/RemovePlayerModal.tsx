@@ -9,7 +9,6 @@ import {
     useDisclosure,
     Select, SelectItem, Autocomplete, AutocompleteItem, Tooltip
 } from "@nextui-org/react";
-import Player_Applies from "@/app/lib/supabase/API/Player_Applies";
 
 export default function RemovePlayerModal(players: any) {
 
@@ -40,24 +39,12 @@ export default function RemovePlayerModal(players: any) {
         event.preventDefault()
         console.log(event.currentTarget)
         const formData = new FormData(event.currentTarget)
-        const iter = formData.values();
-        let playerIdList = [];
-        // @ts-ignore
-        for(var id of iter){
-            playerIdList.push(id)
-        }
-
-        //Player_Applies.removePlayerApply(1);
-        Player_Applies.removePlayerApplies(playerIdList).then(
-            (r) => console.log(r)
-        )
-
-        /*console.log(formData)
+        console.log(formData)
 
         const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/removeplayer', {
             method: 'POST',
             body: formData,
-        })*/
+        })
 
         window.location.reload();
     }
@@ -106,7 +93,7 @@ export default function RemovePlayerModal(players: any) {
                                             Abbrechen
                                         </Button>
                                         <Button color="primary" type="submit" variant="ghost">
-                                            Abmelden
+                                            Löschen
                                         </Button>
                                     </ModalFooter>
                                 </form>

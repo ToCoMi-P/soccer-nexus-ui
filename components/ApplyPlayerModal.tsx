@@ -9,28 +9,43 @@ import {
     useDisclosure,
     Select, SelectItem, Autocomplete, AutocompleteItem
 } from "@nextui-org/react";
-import Players from "@/app/lib/supabase/API/Players";
-import Player_Applies from "@/app/lib/supabase/API/Player_Applies";
 
 export default function ApplyPlayerModal(players: any) {
 
-    console.log("aplly", players)
 
+    //const [selectPlayerNumber, setValue] = useState()
+    //const [selectPlayerNumberList, changeTheList] = useState([])
     const [selectedPlayers, setSelectedPlayers] = useState(null)
+
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
+    //const maxPlayersToSelect = 10;
+    //const maxPlayerNumberToSelect = [...Array(maxPlayersToSelect).keys()].slice(1, maxPlayersToSelect)
+
+    //const BASE_URL = "http://localhost:8080";
+
+    /*const [players, setPlayers] = useState([]);
+
+    useEffect(() => {
+
+        fetch( `${BASE_URL}/playersapplies`)
+            .then(response => response.json())
+            .then(data => {
+                setPlayers(data)
+            })
+    }, [])*/
+
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+        console.log(event.currentTarget)
         const formData = new FormData(event.currentTarget)
-        const iter = formData.values();
-        let playerIdList = [];
-        // @ts-ignore
-        for(var id of iter){
-            playerIdList.push(id)
-        }
+        console.log(formData)
 
-        Player_Applies.addPlayerApplies(playerIdList)
+        const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/playersapplies', {
+            method: 'POST',
+            body: formData,
+        })
 
         window.location.reload();
     }
