@@ -23,7 +23,7 @@ export default function Home() {
 
 	const [players, setPlayers] = useState([]);
 	const [playersApplies, setPlayersApplies] = useState([]);
-	const [maxPlayers, setMaxPlayers] = useState(26)
+	const [maxPlayers, setMaxPlayers] = useState(-1)
 
 	useEffect(() => {
 
@@ -35,32 +35,40 @@ export default function Home() {
 				setPlayers(data)
 			})
 
+		
+
 		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
 			.then(response => response.json())
 			.then(data => {
 				setPlayersApplies(data)
 
-				// TODO: wenn grenze der Nachrücker angepasst wird, sollte sich auch der Datensatz dementsprechend anpassen
-				let count = 0;
-				for(let obj of data){
-					obj.count = ++count
-					if(count == maxPlayers){
-						count = 0
-					}
-					obj.vorname = obj.player.vorname
-					obj.nachname = obj.player.nachname
+				fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
+					.then(response => response.json())
+					.then(data1 => {
+						console.log(maxPlayers, data1.maxPlayers);
+						setMaxPlayers(data1.maxPlayers)
+
+						//maxPlayers = 4
+
+						// TODO: wenn grenze der Nachrücker angepasst wird, sollte sich auch der Datensatz dementsprechend anpassen
+						let count = 0;
+						for(let obj of data){
+							obj.count = ++count
+							if(count == maxPlayers){
+								count = 0
+							}
+							obj.vorname = obj.player.vorname
+							obj.nachname = obj.player.nachname
 				}
+
+					})
 			})
-	}, [maxPlayers])
+	}, [])
 
 	// TODO: Type vom Parameter konkretisieren
 	function setLimit(event: any){
 		setMaxPlayers(event.target.value)
 	}
-
-
-
-
 
 	const columns = [
 		{
@@ -86,18 +94,6 @@ export default function Home() {
 		<section>
 			<div>
 				<WarteMeldung/>
-				<Select
-					label="Grenze der Nachrücker"
-					className="max-w-xs"
-					onChange={setLimit}
-					defaultSelectedKeys={[26]}
-				>
-					<SelectItem key={15}>15</SelectItem>
-					<SelectItem key={24}>24</SelectItem>
-					<SelectItem key={26}>26</SelectItem>
-					<SelectItem key={30}>30</SelectItem>
-					<SelectItem key={36}>36</SelectItem>
-				</Select>
 				<ApplyPlayerModal players={players}/>
 				<RemovePlayerModal players={players}/>
                 <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>

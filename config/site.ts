@@ -12,11 +12,11 @@ export const siteConfig = {
       label: "Spielerliste",
       href: "/registerNewPlayer",
     },
-    /*{
-      label: "Pricing",
-      href: "/pricing",
-    },
     {
+      label: "Admin",
+      href: "/admin",
+    },
+    /*{
       label: "Blog",
       href: "/blog",
     },
@@ -34,11 +34,11 @@ export const siteConfig = {
 			label: "Spielerliste",
 			href: "/registerNewPlayer",
 		},
-		/*{
-			label: "Team",
-			href: "/team",
-		},
 		{
+			label: "Admin",
+			href: "/admin",
+		},
+		/*{
 			label: "Calendar",
 			href: "/calendar",
 		},
