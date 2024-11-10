@@ -5,7 +5,6 @@ import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
-import PlayerExportModal from "@/components/PlayerExportModal";
 import {Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure} from "@nextui-org/react";
 
 export default function Home() {
