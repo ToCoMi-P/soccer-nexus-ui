@@ -1,18 +1,12 @@
 "use client"
 import React, {useEffect, useState} from "react";
 import PlayerTables from "@/components/PlayerTables";
-import {Divider, Select, SelectItem, Tooltip, useDisclosure} from "@nextui-org/react";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 
-import {
-	DeleteIcon
-} from "@/components/icons";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
 
 export default function Home() {
-
-	const BASE_URL = "http://localhost:8080";
 
 	const [players, setPlayers] = useState([]);
 	const [playersApplies, setPlayersApplies] = useState([]);
@@ -28,40 +22,30 @@ export default function Home() {
 				setPlayers(data)
 			})
 
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
+			.then(response => response.json())
+			.then(data1 => {
+				setMaxPlayers(data1.maxPlayers)
+			})
+
 		
 
 		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
 			.then(response => response.json())
 			.then(data => {
 				setPlayersApplies(data)
-
-				fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
-					.then(response => response.json())
-					.then(data1 => {
-						console.log(maxPlayers, data1.maxPlayers);
-						setMaxPlayers(data1.maxPlayers)
-
-						//maxPlayers = 4
-
-						// TODO: wenn grenze der Nachrücker angepasst wird, sollte sich auch der Datensatz dementsprechend anpassen
-						let count = 0;
-						for(let obj of data){
-							obj.count = ++count
-							if(count == maxPlayers){
-								count = 0
-							}
-							obj.vorname = obj.player.vorname
-							obj.nachname = obj.player.nachname
+				let count = 0;
+				for(let obj of data){
+					obj.count = ++count
+					if(count == maxPlayers){
+						count = 0
+					}
+					obj.vorname = obj.player.vorname
+					obj.nachname = obj.player.nachname
 				}
-
-					})
+				
 			})
-	}, [])
-
-	// TODO: Type vom Parameter konkretisieren
-	function setLimit(event: any){
-		setMaxPlayers(event.target.value)
-	}
+	}, [maxPlayers])
 
 	const columns = [
 		{
@@ -81,37 +65,26 @@ export default function Home() {
 			label: "Anmeldezeitpunkt"
 		}
 	];
-	const rows = ["asdfasd", "affdfdfd", "FAFasdfas"]
+
+	if (players.length == 0 || playersApplies.length == 0 || maxPlayers == -1) return <WarteMeldung/>;
 
 	return (
-		<section>
-			<div>
-				<WarteMeldung/>
-				<ApplyPlayerModal players={players}/>
-				<RemovePlayerModal players={players}/>
-                <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
-				<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies}/>
-			</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		<section >
+			{players && playersApplies && 
+				<div className="space-y-4">
+					<div className="mb-12">
+						Grenze der Nachrücker: {maxPlayers}
+					</div>
+					<div>
+						<ApplyPlayerModal players={players}/>
+						<RemovePlayerModal players={players}/>
+					</div>
+					
+					<PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
+					<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies}/>
+				</div>
+			}
+				
 
 
 

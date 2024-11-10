@@ -1,17 +1,19 @@
 "use client"
 
 import React, {FormEvent, useEffect, useState} from "react";
-import RegisterPlayerModal from "@/components/RegisterPlayerModal";
-import PlayerTables from "@/components/PlayerTables";
 import WarteMeldung from "@/components/WarteMeldung";
 import {Button, Select, SelectItem} from "@nextui-org/react";
 
 export default function RegisterNewPlayerPage() {
 
-	const [maxPlayers, setMaxPlayers] = useState(-1)
+	const [maxPlayers, setMaxPlayers] = useState(null)
 
 	useEffect(() => {
-		
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
+					.then(response => response.json())
+					.then(data => {
+						setMaxPlayers(data.maxPlayers)
+					})
 	}, [])
 
 	async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -19,7 +21,7 @@ export default function RegisterNewPlayerPage() {
 		const formData = new FormData(event.currentTarget)
 		console.log(event.currentTarget)
 		console.log(formData)
-		const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/admin/maxPlayers', {
+		await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/admin/maxPlayers', {
 			method: 'POST',
 			body: formData,
 		})
@@ -29,12 +31,14 @@ export default function RegisterNewPlayerPage() {
 
 	return (
 		<div>
-			<form onSubmit={onSubmit}>
+			{!maxPlayers && <WarteMeldung/>}
+			{maxPlayers && <form onSubmit={onSubmit}>
 				<Select
 					label="Grenze der Nachrücker"
 					className="max-w-full mx-28 my-28"
 					name={"maxPlayers"}
-					defaultSelectedKeys={[15]}
+					defaultSelectedKeys={[""+maxPlayers]}
+					value={123}
 				>
 					<SelectItem key={15}>15</SelectItem>
 					<SelectItem key={18}>18</SelectItem>
@@ -46,7 +50,8 @@ export default function RegisterNewPlayerPage() {
 				<Button color="primary" type="submit" variant="ghost">
 					Maximale Spieleranzahl abändern
 				</Button>
-			</form>
+			</form>}
+			
 		</div>
 );
 }

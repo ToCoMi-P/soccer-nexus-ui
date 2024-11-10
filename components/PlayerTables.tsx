@@ -5,10 +5,8 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    getKeyValue,
-    Pagination
+    getKeyValue
 } from "@nextui-org/react";
-import {start} from "repl";
 
 export default function PlayerTables(props: any) {
 
@@ -16,8 +14,9 @@ export default function PlayerTables(props: any) {
 
 
     return (
-        <div>
-            {props.nameOfTable} ({dataList.length})
+        <div className="space-y-2">
+            <div>{props.nameOfTable} ({dataList.length})</div>
+        
             <Table aria-label="Example static collection table"
                    selectionMode="single"
             >
