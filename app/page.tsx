@@ -1,22 +1,21 @@
 "use client"
 import React, {useEffect, useState} from "react";
 import PlayerTables from "@/components/PlayerTables";
-import {Divider, Select, SelectItem, Tooltip, useDisclosure} from "@nextui-org/react";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 
-import {
-	DeleteIcon
-} from "@/components/icons";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
+import PlayerExportModal from "@/components/PlayerExportModal";
+import {Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure} from "@nextui-org/react";
 
 export default function Home() {
-
-	const BASE_URL = "http://localhost:8080";
 
 	const [players, setPlayers] = useState([]);
 	const [playersApplies, setPlayersApplies] = useState([]);
 	const [maxPlayers, setMaxPlayers] = useState(-1)
+	const [showModal, setShowModal] = useState(false);
+
+	const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
 	useEffect(() => {
 
@@ -28,40 +27,30 @@ export default function Home() {
 				setPlayers(data)
 			})
 
+		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
+			.then(response => response.json())
+			.then(data1 => {
+				setMaxPlayers(data1.maxPlayers)
+			})
+
 		
 
 		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
 			.then(response => response.json())
 			.then(data => {
 				setPlayersApplies(data)
-
-				fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
-					.then(response => response.json())
-					.then(data1 => {
-						console.log(maxPlayers, data1.maxPlayers);
-						setMaxPlayers(data1.maxPlayers)
-
-						//maxPlayers = 4
-
-						// TODO: wenn grenze der Nachrücker angepasst wird, sollte sich auch der Datensatz dementsprechend anpassen
-						let count = 0;
-						for(let obj of data){
-							obj.count = ++count
-							if(count == maxPlayers){
-								count = 0
-							}
-							obj.vorname = obj.player.vorname
-							obj.nachname = obj.player.nachname
+				let count = 0;
+				for(let obj of data){
+					obj.count = ++count
+					if(count == maxPlayers){
+						count = 0
+					}
+					obj.vorname = obj.player.vorname
+					obj.nachname = obj.player.nachname
 				}
-
-					})
+				
 			})
-	}, [])
-
-	// TODO: Type vom Parameter konkretisieren
-	function setLimit(event: any){
-		setMaxPlayers(event.target.value)
-	}
+	}, [maxPlayers])
 
 	const columns = [
 		{
@@ -81,38 +70,58 @@ export default function Home() {
 			label: "Anmeldezeitpunkt"
 		}
 	];
-	const rows = ["asdfasd", "affdfdfd", "FAFasdfas"]
+
+	if (players.length == 0 || playersApplies.length == 0 || maxPlayers == -1) return <WarteMeldung/>;
 
 	return (
-		<section>
-			<div>
-				<WarteMeldung/>
-				<ApplyPlayerModal players={players}/>
-				<RemovePlayerModal players={players}/>
-                <PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
-				<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies}/>
-			</div>
+		<section >
+			{players && playersApplies &&
+				<div className="space-y-4">
+					<div className="mb-12">
+						Grenze der Nachrücker: {maxPlayers}
+					</div>
+					<div>
+						<ApplyPlayerModal players={players}/>
+						<RemovePlayerModal players={players}/>
+					</div>
 
+					<PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers}
+								  columns={columns} rows={playersApplies}/>
+					<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns}
+								  rows={playersApplies}/>
 
+					<Button onPress={onOpen} color="primary" variant="ghost">Liste aller Spieler im Textformat zum Kopieren</Button>
+					<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+						<ModalContent>
+							{(onClose) => (
+								<>
+									<ModalHeader className="flex flex-col gap-1">Liste der Namen</ModalHeader>
+									<ModalBody>
+										<ul>
+											{playersApplies.map((item:any) => (
+												<li key={item.id}>
+													{item.vorname} {item.nachname}
+												</li>
+											))}
+										</ul>
+									</ModalBody>
+									<ModalFooter>
+										<Button color="danger" variant="light" onPress={onClose}>
+											Close
+										</Button>
+										<Button color="primary" onPress={onClose}>
+											Action
+										</Button>
+									</ModalFooter>
+								</>
+							)}
+						</ModalContent>
+					</Modal>
 
+					{/*<PlayerExportModal data={[]}/>*/}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+				</div>
+			}
 
 
 			{/*<h1 className={title()}>*/}
