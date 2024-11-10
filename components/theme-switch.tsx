@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import {FC, useState} from "react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { SwitchProps, useSwitch } from "@nextui-org/switch";
 import { useTheme } from "next-themes";
@@ -21,8 +21,20 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
 	const { theme, setTheme } = useTheme();
   const isSSR = useIsSSR();
 
+	let [click, setClicks] = useState(0);
+
 	const onChange = () => {
 		theme === "light" ? setTheme("dark") : setTheme("light");
+
+		setClicks(++click);
+		fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/admin/darkModeClicks', {
+			method: 'POST',
+			body: JSON.stringify({darkModeClicks: click}),
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+		}).then(r => console.log(r))
 	};
 
 	const {

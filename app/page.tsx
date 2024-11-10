@@ -5,12 +5,17 @@ import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
+import PlayerExportModal from "@/components/PlayerExportModal";
+import {Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure} from "@nextui-org/react";
 
 export default function Home() {
 
 	const [players, setPlayers] = useState([]);
 	const [playersApplies, setPlayersApplies] = useState([]);
 	const [maxPlayers, setMaxPlayers] = useState(-1)
+	const [showModal, setShowModal] = useState(false);
+
+	const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
 	useEffect(() => {
 
@@ -70,7 +75,7 @@ export default function Home() {
 
 	return (
 		<section >
-			{players && playersApplies && 
+			{players && playersApplies &&
 				<div className="space-y-4">
 					<div className="mb-12">
 						Grenze der Nachrücker: {maxPlayers}
@@ -79,14 +84,44 @@ export default function Home() {
 						<ApplyPlayerModal players={players}/>
 						<RemovePlayerModal players={players}/>
 					</div>
-					
-					<PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies}/>
-					<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies}/>
+
+					<PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers}
+								  columns={columns} rows={playersApplies}/>
+					<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns}
+								  rows={playersApplies}/>
+
+					<Button onPress={onOpen} color="primary" variant="ghost">Liste aller Spieler im Textformat zum Kopieren</Button>
+					<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+						<ModalContent>
+							{(onClose) => (
+								<>
+									<ModalHeader className="flex flex-col gap-1">Liste der Namen</ModalHeader>
+									<ModalBody>
+										<ul>
+											{playersApplies.map((item:any) => (
+												<li key={item.id}>
+													{item.vorname} {item.nachname}
+												</li>
+											))}
+										</ul>
+									</ModalBody>
+									<ModalFooter>
+										<Button color="danger" variant="light" onPress={onClose}>
+											Close
+										</Button>
+										<Button color="primary" onPress={onClose}>
+											Action
+										</Button>
+									</ModalFooter>
+								</>
+							)}
+						</ModalContent>
+					</Modal>
+
+					{/*<PlayerExportModal data={[]}/>*/}
 
 				</div>
 			}
-				
-
 
 
 			{/*<h1 className={title()}>*/}

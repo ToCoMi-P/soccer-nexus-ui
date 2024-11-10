@@ -22,6 +22,7 @@ import {ThemeSwitch} from "@/components/theme-switch";
 import {
     PayPalFilledIcon,
 } from "@/components/icons";
+import {FormEvent, useState} from "react";
 
 
 export const Navbar = () => {
@@ -44,27 +45,32 @@ export const Navbar = () => {
             }
             type="search"
         />
-    );
+    );*/
 
-    async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    /*async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
         console.log(event.currentTarget)
         console.log(formData)
-        await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/admin/maxPlayers', {
-            method: 'POST',
-            body: formData,
-        })
 
-        window.location.reload();
-    }
+
+
+        //window.location.reload();
+    }*/
 
     let [click, setClicks] = useState(0);
 
     function countClicks() {
         setClicks(++click);
-        console.log(click);
-    }*/
+        fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/admin/payPalClicks', {
+            method: 'POST',
+            body: JSON.stringify({payPalClicks: click}),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })
+    }
 
     return (
         <NextUINavbar maxWidth="xl" position="sticky">
@@ -83,7 +89,7 @@ export const Navbar = () => {
                     /*startContent={<HeartFilledIcon className="text-danger"/>}*/
                     startContent={<PayPalFilledIcon/>}
                     variant="flat"
-                    //onClick={countClicks}
+                    onClick={countClicks}
                 >
                     Bezahlen
                 </Button>
@@ -118,7 +124,7 @@ export const Navbar = () => {
                         /*startContent={<HeartFilledIcon className="text-danger"/>}*/
                         startContent={<PayPalFilledIcon/>}
                         variant="flat"
-                        //onClick={countClicks}
+                        onClick={countClicks}
                     >
                         Bezahlen
                     </Button>

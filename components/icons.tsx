@@ -269,7 +269,7 @@ export const PayPalFilledIcon = ({
 									 ...props
 								 }: IconSvgProps) => (
 
-	<svg width="800px" height="800px" viewBox="0 -140 780 780" enable-background="new 0 0 780 500" version="1.1">
+	<svg width="800px" height="800px" viewBox="0 -140 780 780" enableBackground="new 0 0 780 500" version="1.1">
 		<path
 			d="M725,0H55C24.673,0,0,24.673,0,55v391c0,30.327,24.673,55,55,55h670c30.325,0,55-24.673,55-55V55  C780,24.673,755.325,0,725,0z"
 			fill="#FFF"/>
