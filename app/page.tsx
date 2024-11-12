@@ -70,7 +70,7 @@ export default function Home() {
 		}
 	];
 
-	if (players.length == 0 || playersApplies.length == 0 || maxPlayers == -1) return <WarteMeldung/>;
+	if (players.length == 0 || maxPlayers == -1) return <WarteMeldung/>;
 
 	return (
 		<section >
