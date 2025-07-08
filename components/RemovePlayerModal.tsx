@@ -1,108 +1,55 @@
-import React, {createElement, FormEvent, useEffect, useState} from "react";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    useDisclosure,
-    Select, SelectItem, Autocomplete, AutocompleteItem, Tooltip
-} from "@nextui-org/react";
+import React, { FormEvent } from "react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Select, SelectItem } from "@nextui-org/react";
 
-export default function RemovePlayerModal(players: any) {
+export default function RemovePlayerModal({ players }: { players: any[] }) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    //const [selectPlayerNumber, setValue] = useState()
-    //const [selectPlayerNumberList, changeTheList] = useState([])
-    const [selectedPlayers, setSelectedPlayers] = useState(null)
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
 
+    await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/removeplayer", {
+      method: "POST",
+      body: formData
+    });
 
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    window.location.reload();
+  }
 
-    //const maxPlayersToSelect = 10;
-    //const maxPlayerNumberToSelect = [...Array(maxPlayersToSelect).keys()].slice(1, maxPlayersToSelect)
+  return (
+    <>
+      <Button color="danger" variant="solid" onPress={onOpen} className="text-xs sm:text-sm font-medium" size="sm" aria-label="Spieler abmelden">
+        Abmelden
+      </Button>
 
-    const BASE_URL = "http://localhost:8080";
-
-    /*const [players, setPlayers] = useState([]);
-
-    useEffect(() => {
-
-        fetch( `${BASE_URL}/playersapplies`)
-            .then(response => response.json())
-            .then(data => {
-                setPlayers(data)
-            })
-    }, [])*/
-
-    async function onSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-        console.log(event.currentTarget)
-        const formData = new FormData(event.currentTarget)
-        console.log(formData)
-
-        const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/removeplayer', {
-            method: 'POST',
-            body: formData,
-        })
-
-        window.location.reload();
-    }
-
-
-    return (
-        <section>
-            <div>
-                <Button color="danger" variant="ghost" onPress={onOpen}>
-                    Spieler abmelden
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} placement="center" className="max-w-[95vw]" size="sm">
+        <ModalContent>
+          {(onClose) => (
+            <form onSubmit={onSubmit}>
+              <ModalHeader className="border-b border-gray-200 dark:border-gray-700 p-3">
+                <h3 className="text-sm sm:text-base font-bold">Spieler abmelden</h3>
+              </ModalHeader>
+              <ModalBody className="p-3">
+                <Select selectionMode="multiple" name="selectedPlayers" label="Spieler auswählen" labelPlacement="outside" placeholder="Spieler auswählen" className="max-w-full" size="sm" aria-label="Spieler auswählen">
+                  {players.map((player) => (
+                    <SelectItem key={player.id} value={player.id} textValue={`${player.vorname} ${player.nachname}`} className="text-xs sm:text-sm">
+                      {`${player.vorname} ${player.nachname}`}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </ModalBody>
+              <ModalFooter className="border-t border-gray-200 dark:border-gray-700 p-2">
+                <Button color="danger" variant="light" onPress={onClose} size="sm" className="text-xs sm:text-sm" aria-label="Abbrechen">
+                  Abbrechen
                 </Button>
-                <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} isKeyboardDismissDisabled={true}>
-                    <ModalContent>
-                        {(onClose) => (
-                            <>
-                                <form onSubmit={onSubmit}>
-                                    <ModalHeader className="flex flex-col gap-1">Spieler abmelden</ModalHeader>
-                                    <ModalBody>
-
-                                        <Select selectionMode="multiple" name="selectedPlayers">
-                                            {players.players.map((player: any) => {
-                                                return <SelectItem key={player.id}  value={`${player.vorname} ${player.nachname}`}>{`${player.vorname} ${player.nachname}`}</SelectItem>;
-                                            })}
-                                        </Select>
-
-
-
-
-                                        {/*Vorname
-                                    <Autocomplete>
-                                        <AutocompleteItem>Tommy</AutocompleteItem>
-                                        <AutocompleteItem>Henry</AutocompleteItem>
-                                    </Autocomplete>
-
-                                    Nachname
-                                    <Autocomplete>
-                                        <AutocompleteItem>Tran</AutocompleteItem>
-                                        <AutocompleteItem>Bergmann</AutocompleteItem>
-                                    </Autocomplete>*/}
-
-
-
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Button color="danger" onPress={onClose} variant="ghost">
-                                            Abbrechen
-                                        </Button>
-                                        <Button color="primary" type="submit" variant="ghost">
-                                            Löschen
-                                        </Button>
-                                    </ModalFooter>
-                                </form>
-                            </>
-                        )}
-                    </ModalContent>
-                </Modal>
-            </div>
-        </section>
-    );
+                <Button color="primary" type="submit" size="sm" className="text-xs sm:text-sm" aria-label="Spieler abmelden">
+                  Abmelden
+                </Button>
+              </ModalFooter>
+            </form>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
 }
-

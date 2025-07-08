@@ -1,57 +1,69 @@
-"use client"
+"use client";
 
-import React, {FormEvent, useEffect, useState} from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import WarteMeldung from "@/components/WarteMeldung";
-import {Button, Select, SelectItem} from "@nextui-org/react";
+import { Button, Select, SelectItem } from "@nextui-org/react";
 
-export default function RegisterNewPlayerPage() {
+export default function AdminPage() {
+  const [maxPlayers, setMaxPlayers] = useState<number | null>(null);
+  const [selectedPlayers, setSelectedPlayers] = useState<string>("");
 
-	const [maxPlayers, setMaxPlayers] = useState(null)
+  useEffect(() => {
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
+      .then((response) => response.json())
+      .then((data) => {
+        setMaxPlayers(data.maxPlayers);
+        setSelectedPlayers(String(data.maxPlayers));
+      });
+  }, []);
 
-	useEffect(() => {
-		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
-					.then(response => response.json())
-					.then(data => {
-						setMaxPlayers(data.maxPlayers)
-					})
-	}, [])
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("maxPlayers", selectedPlayers);
 
-	async function onSubmit(event: FormEvent<HTMLFormElement>) {
-		event.preventDefault()
-		const formData = new FormData(event.currentTarget)
-		console.log(event.currentTarget)
-		console.log(formData)
-		await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/admin/maxPlayers', {
-			method: 'POST',
-			body: formData,
-		})
+    await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/admin/maxPlayers", {
+      method: "POST",
+      body: formData
+    });
 
-		window.location.reload();
-	}
+    window.location.reload();
+  }
 
-	return (
-		<div>
-			{!maxPlayers && <WarteMeldung/>}
-			{maxPlayers && <form onSubmit={onSubmit}>
-				<Select
-					label="Grenze der Nachrücker"
-					className="max-w-full mx-28 my-28"
-					name={"maxPlayers"}
-					defaultSelectedKeys={[""+maxPlayers]}
-					value={123}
-				>
-					<SelectItem key={15}>15</SelectItem>
-					<SelectItem key={18}>18</SelectItem>
-					<SelectItem key={24}>24</SelectItem>
-					<SelectItem key={26}>26</SelectItem>
-					<SelectItem key={30}>30</SelectItem>
-					<SelectItem key={36}>36</SelectItem>
-				</Select>
-				<Button color="primary" type="submit" variant="ghost">
-					Maximale Spieleranzahl abändern
-				</Button>
-			</form>}
-			
-		</div>
-);
+  if (maxPlayers === null) return <WarteMeldung />;
+
+  return (
+    <div className="w-full p-3 sm:p-4 md:p-6 max-w-md mx-auto">
+      <div className="bg-gray-800/90 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-lg">
+        <h2 className="text-sm sm:text-base md:text-lg font-bold text-white mb-4 text-center">Admin Einstellungen</h2>
+
+        <form onSubmit={onSubmit} className="space-y-4">
+          <Select
+            label="Grenze der Nachrücker"
+            name="maxPlayers"
+            selectedKeys={[selectedPlayers]}
+            onSelectionChange={(keys) => {
+              const key = Array.from(keys)[0];
+              if (key) setSelectedPlayers(key.toString());
+            }}
+            className="w-full"
+            size="sm"
+            aria-label="Maximale Spieleranzahl auswählen"
+          >
+            {[15, 18, 20, 22, 24, 26, 30, 36].map((num) => (
+              <SelectItem key={String(num)} value={String(num)} textValue={`${num} Spieler`} className="text-xs sm:text-sm">
+                {num} Spieler
+              </SelectItem>
+            ))}
+          </Select>
+
+          <div className="flex justify-center pt-2">
+            <Button color="primary" type="submit" className="text-xs sm:text-sm font-medium" size="sm" aria-label="Einstellungen speichern">
+              Einstellungen speichern
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }

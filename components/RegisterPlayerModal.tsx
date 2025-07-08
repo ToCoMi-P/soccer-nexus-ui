@@ -1,75 +1,50 @@
-import React, {createElement, FormEvent, useState} from "react";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    useDisclosure,
-    Select, SelectItem, Autocomplete, AutocompleteItem, Input
-} from "@nextui-org/react";
+import React, { FormEvent } from "react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
 
 export default function RegisterPlayerModal() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
 
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/players", {
+      method: "POST",
+      body: formData
+    });
 
-    //const maxPlayersToSelect = 10;
-    //const maxPlayerNumberToSelect = [...Array(maxPlayersToSelect).keys()].slice(1, maxPlayersToSelect)
+    window.location.reload();
+  }
 
+  return (
+    <>
+      <Button color="primary" variant="solid" onPress={onOpen} className="text-xs sm:text-sm font-medium" size="sm" aria-label="Neuen Spieler registrieren">
+        Neue Spieler registrieren
+      </Button>
 
-
-    async function onSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-
-        const formData = new FormData(event.currentTarget)
-
-        const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/players', {
-            method: 'POST',
-            body: formData,
-        })
-
-        window.location.reload();
-
-
-        // Handle response if necessary
-        const data = await response.json()
-    }
-
-
-    return (
-        <section>
-            <div>
-                <Button color="primary" variant="ghost" onPress={onOpen}>
-                    Spieler registrieren
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} placement="center" className="max-w-[95vw]" size="sm">
+        <ModalContent>
+          {(onClose) => (
+            <form onSubmit={onSubmit}>
+              <ModalHeader className="border-b border-gray-200 dark:border-gray-700 p-3">
+                <h3 className="text-sm sm:text-base font-bold">Neuen Spieler registrieren</h3>
+              </ModalHeader>
+              <ModalBody className="p-3 gap-2">
+                <Input label="Vorname" placeholder="Vorname eingeben" name="vorname" isRequired size="sm" className="text-xs sm:text-sm" aria-label="Vorname des Spielers" />
+                <Input label="Nachname" placeholder="Nachname eingeben" name="nachname" isRequired size="sm" className="text-xs sm:text-sm" aria-label="Nachname des Spielers" />
+              </ModalBody>
+              <ModalFooter className="border-t border-gray-200 dark:border-gray-700 p-2">
+                <Button color="danger" variant="light" onPress={onClose} size="sm" className="text-xs sm:text-sm" aria-label="Abbrechen">
+                  Abbrechen
                 </Button>
-                <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} isKeyboardDismissDisabled={true}>
-                    <ModalContent>
-                        {(onClose) => (
-                            <>
-                                <ModalHeader className="flex flex-col gap-1">Spieler anmelden</ModalHeader>
-                                <form onSubmit={onSubmit}>
-                                    <ModalBody>
-                                            <Input label="Vorname" placeholder="Dein Vorname" name="vorname"/>
-                                            <Input label="Nachname" placeholder="Dein Nachname" name="nachname" />
-
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Button color="danger" onPress={onClose} variant="ghost">
-                                            Abbrechen
-                                        </Button>
-                                        <Button color="primary" variant="ghost" type="submit">
-                                            Spieler registrieren
-                                        </Button>
-                                    </ModalFooter>
-                                </form>
-                            </>
-                        )}
-                    </ModalContent>
-                </Modal>
-            </div>
-        </section>
-    );
+                <Button color="primary" type="submit" size="sm" className="text-xs sm:text-sm" aria-label="Spieler registrieren">
+                  Registrieren
+                </Button>
+              </ModalFooter>
+            </form>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
 }
-

@@ -1,89 +1,62 @@
 "use client";
 
-import {FC, useState} from "react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { SwitchProps, useSwitch } from "@nextui-org/switch";
 import { useTheme } from "next-themes";
-import {useIsSSR} from "@react-aria/ssr";
+import { useIsSSR } from "@react-aria/ssr";
 import clsx from "clsx";
-
 import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
+import { useState } from "react";
 
 export interface ThemeSwitchProps {
-	className?: string;
-	classNames?: SwitchProps["classNames"];
+  className?: string;
+  classNames?: SwitchProps["classNames"];
 }
 
-export const ThemeSwitch: FC<ThemeSwitchProps> = ({
-	className,
-	classNames,
-}) => {
-	const { theme, setTheme } = useTheme();
+export const ThemeSwitch = ({ className, classNames }: ThemeSwitchProps) => {
+  const { theme, setTheme } = useTheme();
   const isSSR = useIsSSR();
+  const [click, setClicks] = useState(0);
 
-	let [click, setClicks] = useState(0);
+  const onChange = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
 
-	const onChange = () => {
-		theme === "light" ? setTheme("dark") : setTheme("light");
+    const newClicks = click + 1;
+    setClicks(newClicks);
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/admin/darkModeClicks", {
+      method: "POST",
+      body: JSON.stringify({ darkModeClicks: newClicks }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    });
+  };
 
-		setClicks(++click);
-		fetch(process.env.NEXT_PUBLIC_API_BASE_URL + '/admin/darkModeClicks', {
-			method: 'POST',
-			body: JSON.stringify({darkModeClicks: click}),
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-		}).then(r => console.log(r))
-	};
-
-	const {
-		Component,
-		slots,
-		isSelected,
-		getBaseProps,
-		getInputProps,
-		getWrapperProps,
-	} = useSwitch({
-		isSelected: theme === "light" || isSSR,
+  const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } = useSwitch({
+    isSelected: theme === "light" || isSSR,
     "aria-label": `Switch to ${theme === "light" || isSSR ? "dark" : "light"} mode`,
-		onChange,
-	});
+    onChange
+  });
 
-	return (
-		<Component
-			{...getBaseProps({
-				className: clsx(
-					"px-px transition-opacity hover:opacity-80 cursor-pointer",
-					className,
-					classNames?.base
-				),
-			})}
-		>
-			<VisuallyHidden>
-				<input {...getInputProps()} />
-			</VisuallyHidden>
-			<div
-				{...getWrapperProps()}
-				className={slots.wrapper({
-					class: clsx(
-						[
-							"w-auto h-auto",
-							"bg-transparent",
-							"rounded-lg",
-							"flex items-center justify-center",
-							"group-data-[selected=true]:bg-transparent",
-							"!text-default-500",
-							"pt-px",
-							"px-0",
-							"mx-0",
-						],
-						classNames?.wrapper
-					),
-				})}
-			>
-			 {!isSelected || isSSR ? <SunFilledIcon size={22} /> : <MoonFilledIcon size={22} />}
-			</div>
-		</Component>
-	);
+  return (
+    <Component
+      {...getBaseProps({
+        className: clsx("px-px transition-all hover:scale-110 cursor-pointer", className, classNames?.base)
+      })}
+    >
+      <VisuallyHidden>
+        <input {...getInputProps()} />
+      </VisuallyHidden>
+      <div
+        {...getWrapperProps()}
+        className={slots.wrapper({
+          class: clsx(["w-auto h-auto", "bg-transparent", "rounded-full", "flex items-center justify-center", "group-data-[selected=true]:bg-transparent", "text-white", "p-1"], classNames?.wrapper)
+        })}
+      >
+        {!isSelected || isSSR ? <SunFilledIcon size={20} className="text-yellow-300" /> : <MoonFilledIcon size={20} className="text-blue-200" />}
+      </div>
+    </Component>
+  );
 };

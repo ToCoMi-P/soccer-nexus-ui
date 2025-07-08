@@ -1,39 +1,48 @@
-import {
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    getKeyValue
-} from "@nextui-org/react";
+"use client";
 
-export default function PlayerTables(props: any) {
+import React from "react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue } from "@nextui-org/table";
+import { Chip } from "@nextui-org/chip";
 
-    const dataList = props.rows.slice(props.startRange, props.endRange)
+interface PlayerTablesProps {
+  nameOfTable: string;
+  startRange: number;
+  endRange: number;
+  columns: any[];
+  rows: any[];
+}
 
+export default function PlayerTables({ nameOfTable, startRange, endRange, columns, rows }: PlayerTablesProps) {
+  const filteredRows = rows.filter((row, index) => index >= startRange && index < endRange);
 
-    return (
-        <div className="space-y-2">
-            <div>{props.nameOfTable} ({dataList.length})</div>
-        
-            <Table aria-label="Example static collection table"
-                   selectionMode="single"
-            >
+  return (
+    <div className="w-full overflow-x-auto">
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="text-sm sm:text-base font-bold text-white">{nameOfTable}</h3>
+        <Chip color={startRange === 0 ? "success" : "primary"} variant="flat" size="sm" className="text-xs">
+          {filteredRows.length} Spieler
+        </Chip>
+      </div>
 
-                <TableHeader>
-                    {props.columns.map((column: any) =>
-                        <TableColumn key={column.key}>{column.label}</TableColumn>
-                    )}
-                </TableHeader>
-                <TableBody>
-                    {dataList.map((row: any) =>
-                        <TableRow key={dataList.key}>
-                            {(columnKey) => <TableCell>{getKeyValue(row, columnKey)}</TableCell>}
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </div>
-    );
+      <Table
+        aria-label={nameOfTable}
+        removeWrapper
+        className="w-full"
+        classNames={{
+          th: "bg-gray-700 text-white text-xs sm:text-sm font-bold px-2 py-1 sm:px-3 sm:py-2",
+          td: "text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-2",
+          tr: "hover:bg-gray-700/50 transition-colors"
+        }}
+      >
+        <TableHeader columns={columns}>
+          {(column) => (
+            <TableColumn key={column.key} className={column.class} aria-label={column.ariaLabel}>
+              {column.label}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody items={filteredRows}>{(item) => <TableRow key={item.id}>{(columnKey) => <TableCell className={columnKey === "count" ? "text-center" : ""}>{getKeyValue(item, columnKey)}</TableCell>}</TableRow>}</TableBody>
+      </Table>
+    </div>
+  );
 }

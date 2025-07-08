@@ -1,161 +1,134 @@
-"use client"
-import React, {useEffect, useState} from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import PlayerTables from "@/components/PlayerTables";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
-
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
-import {Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure} from "@nextui-org/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
 
 export default function Home() {
+  const [players, setPlayers] = useState([]);
+  const [playersApplies, setPlayersApplies] = useState([]);
+  const [maxPlayers, setMaxPlayers] = useState(-1);
 
-	const [players, setPlayers] = useState([]);
-	const [playersApplies, setPlayersApplies] = useState([]);
-	const [maxPlayers, setMaxPlayers] = useState(-1)
-	const [showModal, setShowModal] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-	const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  useEffect(() => {
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + `/players`)
+      .then((response) => response.json())
+      .then((data) => setPlayers(data));
 
-	useEffect(() => {
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
+      .then((response) => response.json())
+      .then((data) => setMaxPlayers(data.maxPlayers));
 
-		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/players`)
-			.then(response => {
-				return response.json()
-			})
-			.then(data => {
-				setPlayers(data)
-			})
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
+      .then((response) => response.json())
+      .then((data) => {
+        let count = 0;
+        const processedData = data.map((obj) => {
+          obj.count = ++count;
+          if (count === maxPlayers) count = 0;
+          obj.vorname = obj.player.vorname;
+          obj.nachname = obj.player.nachname;
+          return obj;
+        });
+        setPlayersApplies(processedData);
+      });
+  }, [maxPlayers]);
 
-		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
-			.then(response => response.json())
-			.then(data1 => {
-				setMaxPlayers(data1.maxPlayers)
-			})
+  const columns = [
+    {
+      key: "count",
+      label: "NR",
+      class: "w-[40px] sm:w-[50px] font-bold text-center",
+      ariaLabel: "Spielernummer"
+    },
+    {
+      key: "vorname",
+      label: "VORNAME",
+      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
+      ariaLabel: "Vorname des Spielers"
+    },
+    {
+      key: "nachname",
+      label: "NACHNAME",
+      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
+      ariaLabel: "Nachname des Spielers"
+    },
+    {
+      key: "instant",
+      label: "ANGEMELDET AM",
+      class: "min-w-[100px] sm:min-w-[120px] text-xs sm:text-sm",
+      ariaLabel: "Anmeldezeitpunkt"
+    }
+  ];
 
-		
+  if (players.length === 0 || maxPlayers === -1) return <WarteMeldung />;
 
-		fetch( process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
-			.then(response => response.json())
-			.then(data => {
-				setPlayersApplies(data)
-				let count = 0;
-				for(let obj of data){
-					obj.count = ++count
-					if(count == maxPlayers){
-						count = 0
-					}
-					obj.vorname = obj.player.vorname
-					obj.nachname = obj.player.nachname
-				}
-				
-			})
-	}, [maxPlayers])
+  return (
+    <div className="w-full px-2 xs:px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto" role="main" aria-label="Fußball Anmeldeseite">
+      <header className="w-full py-3 sm:py-4 md:py-6 text-center">
+        <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">FUSSBALL ANMELDUNG</span>
+        </h1>
+        <div className="text-xs sm:text-sm md:text-base text-gray-200 mb-3 sm:mb-4">
+          Grenze der Nachrücker:
+          <span className="ml-1 sm:ml-2 px-2 py-1 bg-green-600 rounded-full text-white font-bold text-xs sm:text-sm">{maxPlayers}</span>
+        </div>
+      </header>
 
-	const columns = [
-		{
-			key: "count",
-			label: "NR"
-		},
-		{
-			key: "vorname",
-			label: "Vorname"
-		},
-		{
-			key: "nachname",
-			label: "Nachname"
-		},
-		{
-			key: "instant",
-			label: "Anmeldezeitpunkt"
-		}
-	];
+      <section className="w-full space-y-3 sm:space-y-4 md:space-y-6 pb-6 md:pb-8">
+        <div className="w-full flex flex-col xs:flex-row gap-2 sm:gap-3 justify-center mb-3 sm:mb-4">
+          <ApplyPlayerModal players={players} />
+          <RemovePlayerModal players={players} />
+        </div>
 
-	if (players.length == 0 || maxPlayers == -1) return <WarteMeldung/>;
+        <div className="w-full grid gap-3 sm:gap-4 md:gap-6">
+          <div className="w-full bg-gray-800/90 rounded-lg sm:rounded-xl p-2 sm:p-3 shadow-lg border-l-4 border-green-500">
+            <PlayerTables nameOfTable="ANGEMELDETE SPIELER" startRange={0} endRange={maxPlayers} columns={columns} rows={playersApplies} />
+          </div>
 
-	return (
-		<section >
-			{players && playersApplies &&
-				<div className="space-y-4">
-					<div className="mb-12">
-						Grenze der Nachrücker: {maxPlayers}
-					</div>
-					<div>
-						<ApplyPlayerModal players={players}/>
-						<RemovePlayerModal players={players}/>
-					</div>
+          <div className="w-full bg-gray-800/90 rounded-lg sm:rounded-xl p-2 sm:p-3 shadow-lg border-l-4 border-blue-500">
+            <PlayerTables nameOfTable="NACHRÜCKER" startRange={maxPlayers} endRange={100} columns={columns} rows={playersApplies} />
+          </div>
+        </div>
 
-					<PlayerTables nameOfTable="Angemeldete Spieler" startRange={0} endRange={maxPlayers}
-								  columns={columns} rows={playersApplies}/>
-					<PlayerTables nameOfTable="Nachrücker" startRange={maxPlayers} endRange={100} columns={columns}
-								  rows={playersApplies}/>
+        <div className="w-full text-center mt-3 sm:mt-4">
+          <Button onPress={onOpen} color="primary" variant="shadow" className="w-full max-w-xs sm:max-w-sm bg-gradient-to-r from-green-500 to-blue-600 text-white font-bold py-2 sm:py-3 px-4 rounded-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm" size="sm">
+            Liste aller Spieler kopieren
+          </Button>
 
-					<Button onPress={onOpen} color="primary" variant="ghost">Liste aller Spieler im Textformat zum Kopieren</Button>
-					<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-						<ModalContent>
-							{(onClose) => (
-								<>
-									<ModalHeader className="flex flex-col gap-1">Liste der Namen</ModalHeader>
-									<ModalBody>
-										<ul>
-											{playersApplies.map((item:any) => (
-												<li key={item.id}>
-													{item.vorname} {item.nachname}
-												</li>
-											))}
-										</ul>
-									</ModalBody>
-									<ModalFooter>
-										<Button color="danger" variant="light" onPress={onClose}>
-											Close
-										</Button>
-										<Button color="primary" onPress={onClose}>
-											Action
-										</Button>
-									</ModalFooter>
-								</>
-							)}
-						</ModalContent>
-					</Modal>
-
-					{/*<PlayerExportModal data={[]}/>*/}
-
-				</div>
-			}
-
-
-			{/*<h1 className={title()}>*/}
-			{/*	websites regardless of your design experience.*/}
-			{/*</h1>*/}
-			{/*<h2 className={subtitle({ class: "mt-4" })}>*/}
-			{/*	Beautiful, fast and modern React UI library.*/}
-			{/*</h2>*/}
-
-
-			{/*<div className="flex gap-3">*/}
-			{/*	<Link*/}
-			{/*		isExternal*/}
-			{/*		href={siteConfig.links.docs}*/}
-			{/*		className={buttonStyles({ color: "primary", radius: "full", variant: "shadow" })}*/}
-			{/*	>*/}
-			{/*		Documentation*/}
-			{/*	</Link>*/}
-			{/*	<Link*/}
-			{/*		isExternal*/}
-			{/*		className={buttonStyles({ variant: "bordered", radius: "full" })}*/}
-			{/*		href={siteConfig.links.github}*/}
-			{/*	>*/}
-			{/*		<GithubIcon size={20} />*/}
-			{/*		GitHub*/}
-			{/*	</Link>*/}
-			{/*</div>*/}
-
-			{/*<div className="mt-8">*/}
-			{/*	<Snippet hideSymbol hideCopyButton variant="flat">*/}
-			{/*		<span>*/}
-			{/*			Get started by editing <Code color="primary">app/page.tsx</Code>*/}
-			{/*		</span>*/}
-			{/*	</Snippet>*/}
-			{/*</div>*/}
-		</section>
-	);
+          <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full" scrollBehavior="inside" className="max-w-[100vw]">
+            <ModalContent className="bg-gray-800/95 text-white max-h-[90vh]">
+              {(onClose) => (
+                <>
+                  <ModalHeader className="border-b border-gray-700 p-3 sm:p-4">
+                    <h2 className="text-base sm:text-lg md:text-xl font-bold text-center w-full">Spielerliste</h2>
+                  </ModalHeader>
+                  <ModalBody className="p-0 overflow-y-auto">
+                    <ul className="divide-y divide-gray-700">
+                      {playersApplies.map((item) => (
+                        <li key={item.id} className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-700 transition-colors text-center text-sm sm:text-base" aria-label={`Spieler ${item.vorname} ${item.nachname}`}>
+                          {item.vorname} {item.nachname}
+                        </li>
+                      ))}
+                    </ul>
+                  </ModalBody>
+                  <ModalFooter className="border-t border-gray-700 p-2 sm:p-3 flex justify-center gap-2 sm:gap-3">
+                    <Button color="danger" variant="light" onPress={onClose} className="font-bold text-xs sm:text-sm px-3 sm:px-4" size="sm">
+                      Schließen
+                    </Button>
+                    <Button color="primary" onPress={onClose} className="bg-gradient-to-r from-green-500 to-blue-600 font-bold text-xs sm:text-sm px-3 sm:px-4" size="sm">
+                      Kopieren
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+        </div>
+      </section>
+    </div>
+  );
 }
