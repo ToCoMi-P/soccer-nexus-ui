@@ -1,6 +1,6 @@
 /*
 import React from "react";
-import {Button, Input, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure} from "@nextui-org/react";
+import {Button, Input, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure} from "@heroui/react";
 
 const PEModal = ({ data }) => {
 

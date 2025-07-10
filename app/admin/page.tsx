@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useEffect, useState } from "react";
 import WarteMeldung from "@/components/WarteMeldung";
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { Button, Select, SelectItem } from "@heroui/react";
 
 export default function AdminPage() {
   const [maxPlayers, setMaxPlayers] = useState<number | null>(null);
@@ -51,7 +51,7 @@ export default function AdminPage() {
             aria-label="Maximale Spieleranzahl auswählen"
           >
             {[15, 18, 20, 22, 24, 26, 30, 36].map((num) => (
-              <SelectItem key={String(num)} value={String(num)} textValue={`${num} Spieler`} className="text-xs sm:text-sm">
+              <SelectItem key={String(num)} textValue={`${num} Spieler`} className="text-xs sm:text-sm">
                 {num} Spieler
               </SelectItem>
             ))}

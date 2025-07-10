@@ -1,22 +1,25 @@
+// app/providers.tsx
 "use client";
 
-import * as React from "react";
-import { NextUIProvider } from "@nextui-org/system";
-import { useRouter } from 'next/navigation'
+import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { ThemeProviderProps } from "next-themes";
+import { useRouter } from "next/navigation"; // Keep if you need navigation in HeroUIProvider
 
-export interface ProvidersProps {
-	children: React.ReactNode;
-	themeProps?: ThemeProviderProps;
-}
+export function Providers({ children }: { children: React.ReactNode }) {
+  const router = useRouter(); // Keep if HeroUIProvider needs navigation
 
-export function Providers({ children, themeProps }: ProvidersProps) {
-  const router = useRouter();
-
-	return (
-		<NextUIProvider navigate={router.push}>
-			<NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
-		</NextUIProvider>
-	);
+  return (
+    <HeroUIProvider
+      navigate={router.push} // Only include if HeroUIProvider supports this prop
+    >
+      <NextThemesProvider
+        attribute="class"
+        defaultTheme="dark"
+        enableSystem={false} // Recommended to add
+        disableTransitionOnChange // Recommended to add
+      >
+        {children}
+      </NextThemesProvider>
+    </HeroUIProvider>
+  );
 }

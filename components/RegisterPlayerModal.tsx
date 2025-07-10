@@ -1,5 +1,5 @@
 import React, { FormEvent } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@heroui/react";
 
 export default function RegisterPlayerModal() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

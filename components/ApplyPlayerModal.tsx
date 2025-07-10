@@ -1,5 +1,5 @@
 import React, { FormEvent } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Select, SelectItem } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Select, SelectItem } from "@heroui/react";
 
 export default function ApplyPlayerModal({ players }: { players: any[] }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -32,7 +32,7 @@ export default function ApplyPlayerModal({ players }: { players: any[] }) {
               <ModalBody className="p-3">
                 <Select selectionMode="multiple" name="selectedPlayers" label="Spieler auswählen" labelPlacement="outside" placeholder="Spieler auswählen" className="max-w-full" size="sm" aria-label="Spieler auswählen">
                   {players.map((player) => (
-                    <SelectItem key={player.id} value={player.id} textValue={`${player.vorname} ${player.nachname}`} className="text-xs sm:text-sm">
+                    <SelectItem key={player.id} textValue={`${player.vorname} ${player.nachname}`} className="text-xs sm:text-sm">
                       {`${player.vorname} ${player.nachname}`}
                     </SelectItem>
                   ))}
