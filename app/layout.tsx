@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="de" suppressHydrationWarning className="scroll-smooth">
       <head />
       <body className={clsx("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
-        <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
+        <Providers>
           <div className="relative flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">{children}</main>

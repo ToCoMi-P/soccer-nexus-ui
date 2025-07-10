@@ -32,7 +32,7 @@ export default function RemovePlayerModal({ players }: { players: any[] }) {
               <ModalBody className="p-3">
                 <Select selectionMode="multiple" name="selectedPlayers" label="Spieler auswählen" labelPlacement="outside" placeholder="Spieler auswählen" className="max-w-full" size="sm" aria-label="Spieler auswählen">
                   {players.map((player) => (
-                    <SelectItem key={player.id} value={player.id} textValue={`${player.vorname} ${player.nachname}`} className="text-xs sm:text-sm">
+                    <SelectItem key={player.id} textValue={`${player.vorname} ${player.nachname}`} className="text-xs sm:text-sm">
                       {`${player.vorname} ${player.nachname}`}
                     </SelectItem>
                   ))}
