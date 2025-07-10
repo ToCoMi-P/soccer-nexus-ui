@@ -26,7 +26,7 @@ export default function Home() {
       .then((response) => response.json())
       .then((data) => {
         let count = 0;
-        const processedData = data.map((obj) => {
+        const processedData = data.map((obj: any) => {
           obj.count = ++count;
           if (count === maxPlayers) count = 0;
           obj.vorname = obj.player.vorname;
@@ -108,7 +108,7 @@ export default function Home() {
                   </ModalHeader>
                   <ModalBody className="p-0 overflow-y-auto">
                     <ul className="divide-y divide-gray-700">
-                      {playersApplies.map((item) => (
+                      {playersApplies.map((item: any) => (
                         <li key={item.id} className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-700 transition-colors text-center text-sm sm:text-base" aria-label={`Spieler ${item.vorname} ${item.nachname}`}>
                           {item.vorname} {item.nachname}
                         </li>
