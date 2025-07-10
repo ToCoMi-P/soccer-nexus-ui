@@ -8,55 +8,44 @@ import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 
 export const metadata: Metadata = {
-	title: {
-		default: siteConfig.name,
-		template: `%s - ${siteConfig.name}`,
-	},
-	description: siteConfig.description,
-	icons: {
-		icon: "/favicon.ico",
-	},
+  title: {
+    default: siteConfig.name,
+    template: `%s - ${siteConfig.name}`
+  },
+  description: siteConfig.description,
+  icons: {
+    icon: "/favicon.ico"
+  }
 };
 
 export const viewport: Viewport = {
-	themeColor: [
-		{ media: "(prefers-color-scheme: light)", color: "white" },
-		{ media: "(prefers-color-scheme: dark)", color: "black" },
-	],
-}
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" }
+  ]
+};
 
-export default function RootLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
-	return (
-		<html lang="en" suppressHydrationWarning>
-			<head />
-			<body
-				className={clsx(
-					"min-h-screen bg-background font-sans antialiased",
-					fontSans.variable
-				)}
-			>
-				<Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-					<div className="relative flex flex-col h-screen">
-						<Navbar />
-						<main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-							{children}
-						</main>
-						<footer className="w-full flex items-center justify-center py-3">
-							<Link isExternal className="flex items-center gap-1 text-current">
-								<strong>
-									<span className="text-default-600">&copy; 2024</span>
-								</strong>
-								{/*<p className="text-primary">Tommy Tran &amp; Henry Tran.</p>*/}
-								<p>All rights reserved.</p>
-							</Link>
-						</footer>
-					</div>
-				</Providers>
-			</body>
-		</html>
-	);
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="de" suppressHydrationWarning className="scroll-smooth">
+      <head />
+      <body className={clsx("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
+        <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
+          <div className="relative flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <footer className="w-full py-3 border-t border-gray-700/50 bg-gray-900/50">
+              <div className="container mx-auto px-4 text-center">
+                <Link isExternal className="flex items-center justify-center gap-1 text-gray-400 hover:text-gray-300 text-sm" aria-label="Copyright Information">
+                  <span>&copy; {new Date().getFullYear()}</span>
+                  <span className="text-green-500 font-medium">{siteConfig.name}</span>
+                  <span>All rights reserved.</span>
+                </Link>
+              </div>
+            </footer>
+          </div>
+        </Providers>
+      </body>
+    </html>
+  );
 }
