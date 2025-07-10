@@ -4,7 +4,7 @@ import PlayerTables from "@/components/PlayerTables";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure, Spinner } from "@heroui/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from "@heroui/react";
 
 export default function Home() {
   const [players, setPlayers] = useState([]);
@@ -124,13 +124,8 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="w-full text-center mt-3 sm:mt-4 space-y-2">
-          <div className="flex flex-col items-center gap-2">
-            <Button onPress={onOpen} color="primary" variant="shadow" className="w-full max-w-xs sm:max-w-sm bg-gradient-to-r from-green-500 to-blue-600 text-white font-bold py-2 sm:py-3 px-4 rounded-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm" size="sm">
-              Spielerliste anzeigen
-            </Button>
-
-            <Button onPress={copyRegisteredPlayers} color="secondary" variant="shadow" className="w-full max-w-xs sm:max-w-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-2 sm:py-3 px-4 rounded-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm" size="sm" disabled={isCopying}>
+        <div className="w-full text-center mt-3 sm:mt-4">
+          <Button onPress={copyRegisteredPlayers} color="primary" variant="shadow" className="w-full max-w-xs sm:max-w-sm bg-gradient-to-r from-green-500 to-blue-600 text-white font-bold py-2 sm:py-3 px-4 rounded-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm" size="sm" disabled={isCopying}>
               {isCopying ? (
                 <div className="flex items-center gap-2">
                   <Spinner size="sm" /> Kopiere...
@@ -138,48 +133,32 @@ export default function Home() {
               ) : (
                 "Angemeldete Spieler kopieren"
               )}
-            </Button>
-          </div>
-
+          </Button>
+          
           {copyStatus && <div className={`py-2 px-4 rounded-lg ${copyStatus.success ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>{copyStatus.success ? <span>✅ {copyStatus.count} Spieler wurden kopiert!</span> : <span>❌ Kopieren fehlgeschlagen. Bitte manuell kopieren.</span>}</div>}
 
-          <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg" scrollBehavior="inside" className="max-w-[100vw]">
-            <ModalContent className="bg-gray-800/95 text-white max-h-[80vh]">
+          <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full" scrollBehavior="inside" className="max-w-[100vw]">
+            <ModalContent className="bg-gray-800/95 text-white max-h-[90vh]">
               {(onClose) => (
                 <>
                   <ModalHeader className="border-b border-gray-700 p-3 sm:p-4">
                     <h2 className="text-base sm:text-lg md:text-xl font-bold text-center w-full">Spielerliste</h2>
                   </ModalHeader>
                   <ModalBody className="p-0 overflow-y-auto">
-                    <div className="divide-y divide-gray-700">
-                      <div className="p-3 sm:p-4 bg-gray-700/50">
-                        <h3 className="font-bold text-green-400 text-sm sm:text-base">ANGEMELDETE SPIELER ({playersApplies.slice(0, maxPlayers).length})</h3>
-                      </div>
-                      {playersApplies.slice(0, maxPlayers).map((item: any) => (
-                        <div key={`active-${item.id}`} className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-700 transition-colors flex items-center">
-                          <span className="font-bold w-8 text-center">{item.count}.</span>
-                          <span>
-                            {item.vorname} {item.nachname}
-                          </span>
-                        </div>
+                    <ul className="divide-y divide-gray-700">
+                      {playersApplies.map((item: any) => (
+                        <li key={item.id} className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-700 transition-colors text-center text-sm sm:text-base" aria-label={`Spieler ${item.vorname} ${item.nachname}`}>
+                          {item.vorname} {item.nachname}
+                        </li>
                       ))}
-
-                      <div className="p-3 sm:p-4 bg-gray-700/50">
-                        <h3 className="font-bold text-blue-400 text-sm sm:text-base">NACHRÜCKER ({playersApplies.slice(maxPlayers).length})</h3>
-                      </div>
-                      {playersApplies.slice(maxPlayers).map((item: any, index: number) => (
-                        <div key={`waiting-${item.id}`} className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gray-700 transition-colors flex items-center">
-                          <span className="font-bold w-8 text-center">{index + 1}.</span>
-                          <span>
-                            {item.vorname} {item.nachname}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                    </ul>
                   </ModalBody>
                   <ModalFooter className="border-t border-gray-700 p-2 sm:p-3 flex justify-center gap-2 sm:gap-3">
                     <Button color="danger" variant="light" onPress={onClose} className="font-bold text-xs sm:text-sm px-3 sm:px-4" size="sm">
                       Schließen
+                    </Button>
+                    <Button color="primary" onPress={onClose} className="bg-gradient-to-r from-green-500 to-blue-600 font-bold text-xs sm:text-sm px-3 sm:px-4" size="sm">
+                      Kopieren
                     </Button>
                   </ModalFooter>
                 </>
