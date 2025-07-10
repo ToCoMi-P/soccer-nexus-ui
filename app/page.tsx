@@ -75,7 +75,7 @@ export default function Home() {
     try {
       // Nur angemeldete Spieler (ohne Nachrücker)
       const registeredPlayers = playersApplies.slice(0, maxPlayers);
-      const playerNames = registeredPlayers.map((p) => `${p.vorname} ${p.nachname}`).join("\n");
+      const playerNames = registeredPlayers.map((p: any) => `${p.vorname} ${p.nachname}`).join("\n");
 
       await navigator.clipboard.writeText(playerNames);
 
