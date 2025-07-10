@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useEffect, useState } from "react";
 import WarteMeldung from "@/components/WarteMeldung";
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { Button, Select, SelectItem } from "@heroui/react";
 
 export default function AdminPage() {
   const [maxPlayers, setMaxPlayers] = useState<number | null>(null);

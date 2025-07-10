@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue } from "@nextui-org/table";
-import { Chip } from "@nextui-org/chip";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue } from "@heroui/table";
+import { Chip } from "@heroui/chip";
 
 interface PlayerTablesProps {
   nameOfTable: string;

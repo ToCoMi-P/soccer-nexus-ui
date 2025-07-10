@@ -1,5 +1,5 @@
 import React, { FormEvent } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Select, SelectItem } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Select, SelectItem } from "@heroui/react";
 
 export default function ApplyPlayerModal({ players }: { players: any[] }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
