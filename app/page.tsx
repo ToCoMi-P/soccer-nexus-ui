@@ -4,12 +4,14 @@ import PlayerTables from "@/components/PlayerTables";
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, useDisclosure } from "@heroui/react";
 
 export default function Home() {
   const [players, setPlayers] = useState([]);
   const [playersApplies, setPlayersApplies] = useState([]);
   const [maxPlayers, setMaxPlayers] = useState(-1);
+  const [copyStatus, setCopyStatus] = useState<{ success: boolean; count: number } | null>(null);
+  const [isCopying, setIsCopying] = useState(false);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -64,6 +66,34 @@ export default function Home() {
     }
   ];
 
+  const copyRegisteredPlayers = async () => {
+    if (!playersApplies.length) return;
+
+    setIsCopying(true);
+    setCopyStatus(null);
+
+    try {
+      // Nur angemeldete Spieler (ohne Nachrücker)
+      const registeredPlayers = playersApplies.slice(0, maxPlayers);
+      const playerNames = registeredPlayers.map((p) => `${p.vorname} ${p.nachname}`).join("\n");
+
+      await navigator.clipboard.writeText(playerNames);
+
+      setCopyStatus({
+        success: true,
+        count: registeredPlayers.length
+      });
+    } catch (err) {
+      setCopyStatus({
+        success: false,
+        count: 0
+      });
+    } finally {
+      setIsCopying(false);
+      setTimeout(() => setCopyStatus(null), 3000);
+    }
+  };
+
   if (players.length === 0 || maxPlayers === -1) return <WarteMeldung />;
 
   return (
@@ -95,9 +125,17 @@ export default function Home() {
         </div>
 
         <div className="w-full text-center mt-3 sm:mt-4">
-          <Button onPress={onOpen} color="primary" variant="shadow" className="w-full max-w-xs sm:max-w-sm bg-gradient-to-r from-green-500 to-blue-600 text-white font-bold py-2 sm:py-3 px-4 rounded-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm" size="sm">
-            Liste aller Spieler kopieren
+          <Button onPress={copyRegisteredPlayers} color="primary" variant="shadow" className="w-full max-w-xs sm:max-w-sm bg-gradient-to-r from-green-500 to-blue-600 text-white font-bold py-2 sm:py-3 px-4 rounded-lg hover:scale-[1.02] transition-transform text-xs sm:text-sm" size="sm" disabled={isCopying}>
+              {isCopying ? (
+                <div className="flex items-center gap-2">
+                  <Spinner size="sm" /> Kopiere...
+                </div>
+              ) : (
+                "Angemeldete Spieler kopieren"
+              )}
           </Button>
+          
+          {copyStatus && <div className={`py-2 px-4 rounded-lg ${copyStatus.success ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>{copyStatus.success ? <span>✅ {copyStatus.count} Spieler wurden kopiert!</span> : <span>❌ Kopieren fehlgeschlagen. Bitte manuell kopieren.</span>}</div>}
 
           <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full" scrollBehavior="inside" className="max-w-[100vw]">
             <ModalContent className="bg-gray-800/95 text-white max-h-[90vh]">
