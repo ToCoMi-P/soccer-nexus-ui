@@ -103,7 +103,7 @@ export default function Home() {
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">FUSSBALL ANMELDUNG</span>
         </h1>
         <div className="text-xs sm:text-sm md:text-base text-gray-200 mb-3 sm:mb-4">
-          Grenze der Nachrücker:
+          maximale Spieleranzahl:
           <span className="ml-1 sm:ml-2 px-2 py-1 bg-green-600 rounded-full text-white font-bold text-xs sm:text-sm">{maxPlayers}</span>
         </div>
       </header>
