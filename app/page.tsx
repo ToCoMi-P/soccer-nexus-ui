@@ -1,5 +1,199 @@
-import { ComponentExample } from "@/components/component-example";
+"use client";
+import React, { FormEvent, useEffect, useState } from "react";
+import PlayerTables from "@/components/PlayerTables"; // Entkommentiert
+import ApplyPlayerModal from "@/components/ApplyPlayerModal";
+import RemovePlayerModal from "@/components/RemovePlayerModal";
+import WarteMeldung from "@/components/WarteMeldung";
+import { PlayerService } from "@/lib/RESTServices/players";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  // DialogBody ✅ ENTFERNT!
+} from "@/components/ui/dialog";
 
-export default function Page() {
-return <ComponentExample />;
+export default function Home() {
+  const [players, setPlayers] = useState([]);
+  const [playersApplies, setPlayersApplies] = useState([]);
+  const [maxPlayers, setMaxPlayers] = useState(-1);
+  const [copyStatus, setCopyStatus] = useState<{ success: boolean; count: number } | null>(null);
+  const [isCopying, setIsCopying] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    PlayerService.getPlayers().then((players) => setPlayers(players))
+
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
+      .then((response) => response.json())
+      .then((data) => setMaxPlayers(data.maxPlayers));
+
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
+      .then((response) => response.json())
+      .then((data) => {
+        let count = 0;
+        const processedData = data.map((obj: any) => {
+          obj.count = ++count;
+          if (count === maxPlayers) count = 0;
+          obj.vorname = obj.player.vorname;
+          obj.nachname = obj.player.nachname;
+          return obj;
+        });
+        setPlayersApplies(processedData);
+      });
+  }, [maxPlayers]);
+
+  const columns = [
+    {
+      key: "count",
+      label: "NR",
+      class: "w-[40px] sm:w-[50px] font-bold text-center",
+      ariaLabel: "Spielernummer"
+    },
+    {
+      key: "vorname",
+      label: "VORNAME",
+      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
+      ariaLabel: "Vorname des Spielers"
+    },
+    {
+      key: "nachname",
+      label: "NACHNAME",
+      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
+      ariaLabel: "Nachname des Spielers"
+    },
+    {
+      key: "instant",
+      label: "ANGEMELDET AM",
+      class: "min-w-[100px] sm:min-w-[120px] text-xs sm:text-sm",
+      ariaLabel: "Anmeldezeitpunkt"
+    }
+  ];
+
+  const copyRegisteredPlayers = async () => {
+    if (!playersApplies.length) return;
+
+    setIsCopying(true);
+    setCopyStatus(null);
+
+    try {
+      const registeredPlayers = playersApplies.slice(0, maxPlayers);
+      const playerNames = registeredPlayers.map((p: any) => `${p.vorname} ${p.nachname}`).join("\n");
+
+      await navigator.clipboard.writeText(playerNames);
+
+      setCopyStatus({
+        success: true,
+        count: registeredPlayers.length
+      });
+    } catch (err) {
+      setCopyStatus({
+        success: false,
+        count: 0
+      });
+    } finally {
+      setIsCopying(false);
+      setTimeout(() => setCopyStatus(null), 3000);
+    }
+  };
+
+  if (players.length === 0 || maxPlayers === -1) return <WarteMeldung />;
+
+  return (
+      <div className="min-h-screen bg-background px-2 py-4 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto" role="main" aria-label="Fußball Anmeldeseite">
+        <header className="w-full py-4 sm:py-6 md:py-8 text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2 sm:mb-4">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
+              FUSSBALL ANMELDUNG
+            </span>
+          </h1>
+          <div className="text-xs sm:text-sm md:text-base text-muted-foreground">
+            maximale Spieleranzahl:
+            <span className="ml-2 px-3 py-1 bg-green-600 rounded-full text-white font-bold text-xs sm:text-sm">
+              {maxPlayers}
+            </span>
+          </div>
+        </header>
+
+        <section className="w-full space-y-4 sm:space-y-6 md:space-y-8 pb-8 sm:pb-12">
+          {/* Buttons - FULL WIDTH auf Handy */}
+          <div className="w-full flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center mb-6 sm:mb-8">
+            <ApplyPlayerModal players={players} />
+            <RemovePlayerModal players={players} />
+          </div>
+
+          {/* Tables - Responsive Grid */}
+          <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+            <div className="w-full bg-background/90 rounded-xl p-3 sm:p-4 shadow-lg border border-border border-l-4 border-green-500 min-h-[200px]">
+              <PlayerTables 
+                nameOfTable="ANGEMELDETE SPIELER" 
+                startRange={0} 
+                endRange={maxPlayers} 
+                columns={columns} 
+                rows={playersApplies} 
+              />
+            </div>
+
+            <div className="w-full bg-background/90 rounded-xl p-3 sm:p-4 shadow-lg border border-border border-l-4 border-blue-500 min-h-[200px]">
+              <PlayerTables 
+                nameOfTable="NACHRÜCKER" 
+                startRange={maxPlayers} 
+                endRange={100} 
+                columns={columns} 
+                rows={playersApplies} 
+              />
+            </div>
+          </div>
+
+          {/* Action Buttons - Center & Full Width auf Handy */}
+          <div className="w-full flex flex-col items-center gap-4 mt-8 sm:mt-12">
+            <Button 
+              onClick={copyRegisteredPlayers} 
+              className="w-full max-w-sm sm:max-w-md bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all text-sm sm:text-base shadow-lg disabled:opacity-50" 
+              size="lg" 
+              disabled={isCopying}
+            >
+              {isCopying ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Kopiere...
+                </div>
+              ) : (
+                "Angemeldete Spieler kopieren"
+              )}
+            </Button>
+            
+            {copyStatus && (
+              <div className={`w-full max-w-sm sm:max-w-md py-3 px-4 rounded-xl text-sm shadow-md ${
+                copyStatus.success 
+                  ? "bg-green-500/20 text-green-400 border-2 border-green-500/30" 
+                  : "bg-destructive/20 text-destructive border-2 border-destructive/30"
+              }`}>
+                {copyStatus.success 
+                  ? `✅ ${copyStatus.count} Spieler kopiert!` 
+                  : `❌ Kopieren fehlgeschlagen.`
+                }
+              </div>
+            )}
+
+            <Button
+              onClick={() => setIsOpen(true)}
+              className="w-full max-w-sm sm:max-w-md bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl text-sm sm:text-base shadow-lg"
+              size="lg"
+            >
+              Vollständige Spielerliste
+            </Button>
+          </div>
+
+          {/* Dialog bleibt gleich - mobil-optimiert */}
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent className="max-w-6xl max-h-[90vh] w-[95vw] sm:w-[90vw] bg-background/95 text-foreground p-0">
+              {/* Rest unverändert */}
+            </DialogContent>
+          </Dialog>
+        </section>
+      </div>
+    );
 }
