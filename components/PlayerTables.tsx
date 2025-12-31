@@ -5,7 +5,7 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,      // ✅ HIER!
+  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -15,7 +15,6 @@ interface PlayerTablesProps {
   nameOfTable: string;
   startRange: number;
   endRange: number;
-  columns: any[];
   rows: any[];
 }
 
@@ -23,12 +22,40 @@ export default function PlayerTables({
   nameOfTable, 
   startRange, 
   endRange, 
-  columns, 
   rows 
 }: PlayerTablesProps) {
   const filteredRows = rows.filter((row: any, index: number) => 
     index >= startRange && index < endRange
   );
+
+  const columns = [
+    {
+      key: "count",
+      label: "NR",
+      class: "w-[40px] sm:w-[50px] font-bold text-center",
+      ariaLabel: "Spielernummer"
+    },
+    {
+      key: "vorname",
+      label: "VORNAME",
+      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
+      ariaLabel: "Vorname des Spielers"
+    },
+    {
+      key: "nachname",
+      label: "NACHNAME",
+      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
+      ariaLabel: "Nachname des Spielers"
+    },
+    // In Home.tsx - columns Definition:
+    {
+      key: "instant",
+      label: "ANGEMELDET AM",
+      class: "w-[90px] sm:w-[120px] md:w-[140px] text-xs sm:text-sm **leading-tight** **whitespace-pre-line**",
+      ariaLabel: "Anmeldezeitpunkt"
+    }
+
+  ];
 
   return (
     <div className="w-full overflow-x-auto">
@@ -46,11 +73,11 @@ export default function PlayerTables({
 
       <Table className="w-full">
         <TableHeader>
-          <TableRow>  {/* ✅ TableRow für Header */}
+          <TableRow>
             {columns.map((column) => (
               <TableHead 
                 key={column.key} 
-                className={column.class}
+                className={`bg-muted/50 text-foreground text-xs sm:text-sm font-bold px-2 py-2 sm:px-3 sm:py-3 ${column.class}`}
                 aria-label={column.ariaLabel}
               >
                 {column.label}
@@ -60,13 +87,16 @@ export default function PlayerTables({
         </TableHeader>
         <TableBody>
           {filteredRows.map((item: any) => (
-            <TableRow key={item.id} className="hover:bg-muted/50 transition-colors">
+            <TableRow key={item.id} className="hover:bg-muted/80 transition-colors border-b border-border/50">
               {columns.map((column) => (
                 <TableCell 
                   key={column.key}
-                  className={column.key === "count" ? "text-center" : ""}
+                  className={`text-xs sm:text-sm px-2 py-2 sm:px-3 sm:py-3 ${column.key === "count" ? "text-center font-mono" : "text-left"} leading-tight break-words whitespace-pre-line`}
                 >
-                  {item[column.key]}  {/* ✅ Direkt item[column.key] */}
+                  {column.key === "instant" && item[column.key] 
+                    ? item[column.key].replace(/ /, '\n') 
+                    : item[column.key]
+                  }
                 </TableCell>
               ))}
             </TableRow>

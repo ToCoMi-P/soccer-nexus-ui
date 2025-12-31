@@ -17,12 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-
-type Player = {
-  id: string;
-  vorname: string;
-  nachname: string;
-};
+import { MultiSelect } from "@/components/multi-select";
 
 export default function RemovePlayerModal({ players }: { players: Player[] }) {
   const [open, setOpen] = useState(false);
@@ -69,38 +64,11 @@ export default function RemovePlayerModal({ players }: { players: Player[] }) {
                 Spieler auswählen
               </Label>
               
-              {/* Multi-Select Workaround (shadcn hat kein natives multiple) */}
-              <Select
-                onValueChange={(value) => {
-                  setSelectedPlayers((prev) =>
-                    prev.includes(value)
-                      ? prev.filter((id) => id !== value)
-                      : [...prev, value]
-                  );
-                }}
-              >
-                <SelectTrigger className="w-full text-xs sm:text-sm">
-                  <SelectValue placeholder="Spieler auswählen (klicke mehrmals zum Toggle)" />
-                </SelectTrigger>
-                <SelectContent>
-                  {players.map((player) => (
-                    <SelectItem
-                      key={player.id}
-                      value={player.id}
-                      className="text-xs sm:text-sm"
-                    >
-                      {player.vorname} {player.nachname}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* Anzeige ausgewählter Spieler */}
-              {selectedPlayers.length > 0 && (
-                <div className="text-xs sm:text-sm text-muted-foreground">
-                  Ausgewählt: {selectedPlayers.length} Spieler
-                </div>
-              )}
+              <MultiSelect
+                options={players.map(p => ({ value: p.id, label: `${p.vorname} ${p.nachname}` }))}
+                onValueChange={setSelectedPlayers}
+                value={selectedPlayers}
+              />
             </div>
 
             <DialogFooter className="border-t border-gray-200 dark:border-gray-700 p-2">

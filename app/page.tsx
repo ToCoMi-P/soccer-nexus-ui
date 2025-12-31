@@ -4,16 +4,10 @@ import PlayerTables from "@/components/PlayerTables"; // Entkommentiert
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
-import { PlayerService } from "@/lib/RESTServices/players";
+import { PlayerService } from "@/lib/RESTServices/PlayerService";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  // DialogBody ✅ ENTFERNT!
-} from "@/components/ui/dialog";
+import { AdminService } from "@/lib/RESTServices/AdminService";
+import { PlayerAppliesService } from "@/lib/RESTServices/PlayerAppliesService";
 
 export default function Home() {
   const [players, setPlayers] = useState([]);
@@ -24,15 +18,11 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    PlayerService.getPlayers().then((players) => setPlayers(players))
+    PlayerService.getPlayers().then((players) => setPlayers(players));
 
-    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + `/admin/maxPlayers`)
-      .then((response) => response.json())
-      .then((data) => setMaxPlayers(data.maxPlayers));
+    AdminService.getMaxPlayers().then((data) => setMaxPlayers(data.maxPlayers));
 
-    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + `/playersappliesnextmonday`)
-      .then((response) => response.json())
-      .then((data) => {
+    PlayerAppliesService.getPlayersNextMonday().then((data) => {
         let count = 0;
         const processedData = data.map((obj: any) => {
           obj.count = ++count;
@@ -42,35 +32,8 @@ export default function Home() {
           return obj;
         });
         setPlayersApplies(processedData);
-      });
+      })
   }, [maxPlayers]);
-
-  const columns = [
-    {
-      key: "count",
-      label: "NR",
-      class: "w-[40px] sm:w-[50px] font-bold text-center",
-      ariaLabel: "Spielernummer"
-    },
-    {
-      key: "vorname",
-      label: "VORNAME",
-      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
-      ariaLabel: "Vorname des Spielers"
-    },
-    {
-      key: "nachname",
-      label: "NACHNAME",
-      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
-      ariaLabel: "Nachname des Spielers"
-    },
-    {
-      key: "instant",
-      label: "ANGEMELDET AM",
-      class: "min-w-[100px] sm:min-w-[120px] text-xs sm:text-sm",
-      ariaLabel: "Anmeldezeitpunkt"
-    }
-  ];
 
   const copyRegisteredPlayers = async () => {
     if (!playersApplies.length) return;
@@ -131,7 +94,6 @@ export default function Home() {
                 nameOfTable="ANGEMELDETE SPIELER" 
                 startRange={0} 
                 endRange={maxPlayers} 
-                columns={columns} 
                 rows={playersApplies} 
               />
             </div>
@@ -141,7 +103,6 @@ export default function Home() {
                 nameOfTable="NACHRÜCKER" 
                 startRange={maxPlayers} 
                 endRange={100} 
-                columns={columns} 
                 rows={playersApplies} 
               />
             </div>
@@ -177,22 +138,7 @@ export default function Home() {
                 }
               </div>
             )}
-
-            <Button
-              onClick={() => setIsOpen(true)}
-              className="w-full max-w-sm sm:max-w-md bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl text-sm sm:text-base shadow-lg"
-              size="lg"
-            >
-              Vollständige Spielerliste
-            </Button>
           </div>
-
-          {/* Dialog bleibt gleich - mobil-optimiert */}
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="max-w-6xl max-h-[90vh] w-[95vw] sm:w-[90vw] bg-background/95 text-foreground p-0">
-              {/* Rest unverändert */}
-            </DialogContent>
-          </Dialog>
         </section>
       </div>
     );

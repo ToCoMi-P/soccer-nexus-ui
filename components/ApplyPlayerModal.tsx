@@ -19,12 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import router from "next/router"
+import { MultiSelect } from "@/components/multi-select";
 
-type Player = {
-  id: string
-  vorname: string
-  nachname: string
-}
 
 export default function ApplyPlayerModal({ players }: { players: Player[] }) {
   const [open, setOpen] = useState(false)
@@ -77,44 +73,11 @@ export default function ApplyPlayerModal({ players }: { players: Player[] }) {
               </label>
 
               {/* Einfaches Multi-Select mit Dropdown + Chips / Text */}
-              <Select
-                // shadcn-Select unterstützt von Haus aus kein echtes multiple,
-                // daher: eigener State + einfache Lösung über Komma-getrennten String
-                // oder nur eine Auswahl zulassen, hier Workaround:
-                onValueChange={(value) => {
-                  setSelectedPlayers((prev) =>
-                    prev.includes(value)
-                      ? prev.filter((id) => id !== value)
-                      : [...prev, value]
-                  )
-                }}
-              >
-                <SelectTrigger className="w-full text-xs sm:text-sm">
-                  <SelectValue placeholder="Spieler auswählen" />
-                </SelectTrigger>
-                <SelectContent>
-                  {players.map((player) => (
-                    <SelectItem
-                      key={player.id}
-                      value={player.id}
-                      className="text-xs sm:text-sm"
-                    >
-                      {player.vorname} {player.nachname}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* Anzeige der aktuell gewählten Spieler */}
-              {selectedPlayers.length > 0 && (
-                <div className="text-xs sm:text-sm text-muted-foreground">
-                  Ausgewählt:{" "}
-                  {players
-                    .filter((p) => selectedPlayers.includes(p.id))
-                    .map((p) => `${p.vorname} ${p.nachname}`)
-                    .join(", ")}
-                </div>
-              )}
+              <MultiSelect
+                options={players.map(p => ({ value: p.id, label: `${p.vorname} ${p.nachname}` }))}
+                onValueChange={setSelectedPlayers}
+                value={selectedPlayers}
+              />
             </div>
 
             <DialogFooter className="border-t border-gray-200 dark:border-gray-700 p-2">
