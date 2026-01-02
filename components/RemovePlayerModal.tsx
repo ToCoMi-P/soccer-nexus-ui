@@ -1,16 +1,32 @@
-import React, { FormEvent } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Select, SelectItem } from "@heroui/react";
+"use client";
 
-export default function RemovePlayerModal({ players }: { players: any[] }) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+import React, { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { MultiSelect } from "@/components/multi-select";
+import { Player } from "@/lib/Types/Player";
+
+export default function RemovePlayerModal({ players }: { players: Player[] }) {
+  const [open, setOpen] = useState(false);
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    
+    // Ausgewählte Spieler IDs hinzufügen
+    selectedPlayers.forEach((id) => formData.append("selectedPlayers", id));
 
     await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/removeplayer", {
       method: "POST",
-      body: formData
+      body: formData,
     });
 
     window.location.reload();
@@ -18,38 +34,62 @@ export default function RemovePlayerModal({ players }: { players: any[] }) {
 
   return (
     <>
-      <Button color="danger" variant="solid" onPress={onOpen} className="text-xs sm:text-sm font-medium" size="sm" aria-label="Spieler abmelden">
+      <Button
+        variant="destructive"
+        onClick={() => setOpen(true)}
+        className="text-xs sm:text-sm font-medium"
+        size="sm"
+        aria-label="Spieler abmelden"
+      >
         Abmelden
       </Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} placement="center" className="max-w-[95vw]" size="sm">
-        <ModalContent>
-          {(onClose) => (
-            <form onSubmit={onSubmit}>
-              <ModalHeader className="border-b border-gray-200 dark:border-gray-700 p-3">
-                <h3 className="text-sm sm:text-base font-bold">Spieler abmelden</h3>
-              </ModalHeader>
-              <ModalBody className="p-3">
-                <Select selectionMode="multiple" name="selectedPlayers" label="Spieler auswählen" labelPlacement="outside" placeholder="Spieler auswählen" className="max-w-full" size="sm" aria-label="Spieler auswählen">
-                  {players.map((player) => (
-                    <SelectItem key={player.id} textValue={`${player.vorname} ${player.nachname}`} className="text-xs sm:text-sm">
-                      {`${player.vorname} ${player.nachname}`}
-                    </SelectItem>
-                  ))}
-                </Select>
-              </ModalBody>
-              <ModalFooter className="border-t border-gray-200 dark:border-gray-700 p-2">
-                <Button color="danger" variant="light" onPress={onClose} size="sm" className="text-xs sm:text-sm" aria-label="Abbrechen">
-                  Abbrechen
-                </Button>
-                <Button color="primary" type="submit" size="sm" className="text-xs sm:text-sm" aria-label="Spieler abmelden">
-                  Abmelden
-                </Button>
-              </ModalFooter>
-            </form>
-          )}
-        </ModalContent>
-      </Modal>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-[95vw] sm:max-w-sm">
+          <form onSubmit={onSubmit}>
+            <DialogHeader className="border-b border-gray-200 dark:border-gray-700 p-3">
+              <DialogTitle className="text-sm sm:text-base font-bold">
+                Spieler abmelden
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="p-3 space-y-2">
+              <Label className="text-xs sm:text-sm font-medium">
+                Spieler auswählen
+              </Label>
+              
+              <MultiSelect
+                options={players.map(p => ({ value: p.id, label: `${p.vorname} ${p.nachname}` }))}
+                onValueChange={setSelectedPlayers}
+                value={selectedPlayers}
+              />
+            </div>
+
+            <DialogFooter className="border-t border-gray-200 dark:border-gray-700 p-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-xs sm:text-sm"
+                aria-label="Abbrechen"
+                onClick={() => setOpen(false)}
+              >
+                Abbrechen
+              </Button>
+              <Button
+                type="submit"
+                variant="destructive"
+                size="sm"
+                className="text-xs sm:text-sm"
+                disabled={selectedPlayers.length === 0}
+                aria-label="Spieler abmelden"
+              >
+                Abmelden
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
