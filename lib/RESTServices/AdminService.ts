@@ -1,4 +1,4 @@
-import { Player } from "@/Types/Player"
+import { Admin } from "../Types/Admin"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string
 
@@ -7,7 +7,7 @@ if (!API_BASE_URL) {
 }
 
 export class AdminService {
-  static async getMaxPlayers(): Promise<Number> {
+  static async getMaxPlayers(): Promise<Admin> {
     const res = await fetch(`${API_BASE_URL}/admin/maxPlayers`, {
       cache: "no-store",
     })

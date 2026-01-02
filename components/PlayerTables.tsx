@@ -10,52 +10,34 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { PlayerApplies } from "@/lib/Types/PlayerApplies";
 
 interface PlayerTablesProps {
-  nameOfTable: string;
-  startRange: number;
-  endRange: number;
-  rows: any[];
+  nameOfTable: string
+  startRange: number
+  endRange: number
+  columns: ColumnConfig[]
+  rows: PlayerApplies[]
+}
+
+
+export interface ColumnConfig {
+  key: keyof PlayerApplies;  // ← keyof macht Keys type-safe!
+  label: string;
+  class?: string;
+  ariaLabel?: string;
 }
 
 export default function PlayerTables({ 
   nameOfTable, 
   startRange, 
   endRange, 
-  rows 
+  rows,
+  columns
 }: PlayerTablesProps) {
-  const filteredRows = rows.filter((row: any, index: number) => 
+  const filteredRows = rows.filter((row: unknown, index: number) => 
     index >= startRange && index < endRange
   );
-
-  const columns = [
-    {
-      key: "count",
-      label: "NR",
-      class: "w-[40px] sm:w-[50px] font-bold text-center",
-      ariaLabel: "Spielernummer"
-    },
-    {
-      key: "vorname",
-      label: "VORNAME",
-      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
-      ariaLabel: "Vorname des Spielers"
-    },
-    {
-      key: "nachname",
-      label: "NACHNAME",
-      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
-      ariaLabel: "Nachname des Spielers"
-    },
-    // In Home.tsx - columns Definition:
-    {
-      key: "instant",
-      label: "ANGEMELDET AM",
-      class: "w-[90px] sm:w-[120px] md:w-[140px] text-xs sm:text-sm **leading-tight** **whitespace-pre-line**",
-      ariaLabel: "Anmeldezeitpunkt"
-    }
-
-  ];
 
   return (
     <div className="w-full overflow-x-auto">
@@ -86,7 +68,7 @@ export default function PlayerTables({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredRows.map((item: any) => (
+          {filteredRows.map((item: PlayerApplies) => (
             <TableRow key={item.id} className="hover:bg-muted/80 transition-colors border-b border-border/50">
               {columns.map((column) => (
                 <TableCell 

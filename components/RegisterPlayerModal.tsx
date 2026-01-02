@@ -59,7 +59,6 @@ export default function RegisterPlayerModal() {
                   name="vorname"
                   placeholder="Vorname eingeben"
                   required
-                  size="sm" // Falls dein Input size prop hat
                   className="text-xs sm:text-sm h-9"
                   aria-label="Vorname des Spielers"
                 />
@@ -74,7 +73,6 @@ export default function RegisterPlayerModal() {
                   name="nachname"
                   placeholder="Nachname eingeben"
                   required
-                  size="sm"
                   className="text-xs sm:text-sm h-9"
                   aria-label="Nachname des Spielers"
                 />

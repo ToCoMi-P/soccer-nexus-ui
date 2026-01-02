@@ -9,15 +9,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/multi-select";
+import { Player } from "@/lib/Types/Player";
 
 export default function RemovePlayerModal({ players }: { players: Player[] }) {
   const [open, setOpen] = useState(false);

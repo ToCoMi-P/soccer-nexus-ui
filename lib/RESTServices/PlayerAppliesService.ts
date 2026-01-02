@@ -1,4 +1,4 @@
-import { Player } from "@/Types/Player"
+import { PlayerAppliesDTO } from "../Types/PlayerApplies"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string
 
@@ -7,7 +7,7 @@ if (!API_BASE_URL) {
 }
 
 export class PlayerAppliesService {
-  static async getPlayersNextMonday(): Promise<Player[]> {
+  static async getPlayersNextMonday(): Promise<PlayerAppliesDTO[]> {
     const res = await fetch(`${API_BASE_URL}/playersappliesnextmonday`, {
       cache: "no-store",
     })

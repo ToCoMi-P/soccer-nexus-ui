@@ -47,14 +47,13 @@ export default function AdminPage() {
         </h2>
 
         <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-2">
+          <div className="space-y-2 w-full">
             <label className="text-sm font-medium text-foreground">
               Grenze der Nachrücker
             </label>
             <Select
               value={selectedPlayers}
               onValueChange={setSelectedPlayers}
-              className="w-full"
             >
               <SelectTrigger className="text-xs sm:text-sm">
                 <SelectValue placeholder="Spieleranzahl auswählen" />

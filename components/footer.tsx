@@ -1,14 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { siteConfig } from '@/config/site';
 
 export function ClientFooter() {
-  const [year, setYear] = useState('2025');
-  
-  useEffect(() => {
-    setYear(new Date().getFullYear().toString());
-  }, []);
+  const year = new Date().getFullYear().toString(); 
 
   return (
     <footer className="border-t bg-background py-8 mt-auto">

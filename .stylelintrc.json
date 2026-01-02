@@ -1,0 +1,9 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "css/declaration-no-unknown": [
+      true,
+      { "ignoreProperties": ["use"] }
+    ]
+  }
+}

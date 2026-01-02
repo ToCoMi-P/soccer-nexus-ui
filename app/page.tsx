@@ -1,6 +1,6 @@
 "use client";
-import React, { FormEvent, useEffect, useState } from "react";
-import PlayerTables from "@/components/PlayerTables"; // Entkommentiert
+import React, { useEffect, useState } from "react";
+import PlayerTables, { ColumnConfig } from "@/components/PlayerTables"; // Entkommentiert
 import ApplyPlayerModal from "@/components/ApplyPlayerModal";
 import RemovePlayerModal from "@/components/RemovePlayerModal";
 import WarteMeldung from "@/components/WarteMeldung";
@@ -8,32 +8,57 @@ import { PlayerService } from "@/lib/RESTServices/PlayerService";
 import { Button } from "@/components/ui/button";
 import { AdminService } from "@/lib/RESTServices/AdminService";
 import { PlayerAppliesService } from "@/lib/RESTServices/PlayerAppliesService";
+import { Player } from "@/lib/Types/Player";
+import { PlayerApplies, PlayerAppliesDTO, PlayerAppliesUtlity } from "@/lib/Types/PlayerApplies";
+import { Admin } from "@/lib/Types/Admin";
 
 export default function Home() {
-  const [players, setPlayers] = useState([]);
-  const [playersApplies, setPlayersApplies] = useState([]);
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [playersApplies, setPlayersApplies] = useState<PlayerApplies[]>([]);
   const [maxPlayers, setMaxPlayers] = useState(-1);
   const [copyStatus, setCopyStatus] = useState<{ success: boolean; count: number } | null>(null);
   const [isCopying, setIsCopying] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     PlayerService.getPlayers().then((players) => setPlayers(players));
 
-    AdminService.getMaxPlayers().then((data) => setMaxPlayers(data.maxPlayers));
+    AdminService.getMaxPlayers().then((data: Admin) => setMaxPlayers(data.maxPlayers));
 
-    PlayerAppliesService.getPlayersNextMonday().then((data) => {
-        let count = 0;
-        const processedData = data.map((obj: any) => {
-          obj.count = ++count;
-          if (count === maxPlayers) count = 0;
-          obj.vorname = obj.player.vorname;
-          obj.nachname = obj.player.nachname;
-          return obj;
-        });
+    PlayerAppliesService.getPlayersNextMonday().then((data: PlayerAppliesDTO[]) => {
+
+        const processedData: PlayerApplies[] = PlayerAppliesUtlity.convertDTOToType(data)
         setPlayersApplies(processedData);
       })
   }, [maxPlayers]);
+
+  const columns: ColumnConfig[] = [
+    {
+      key: "count",
+      label: "NR",
+      class: "w-[40px] sm:w-[50px] font-bold text-center",
+      ariaLabel: "Spielernummer"
+    },
+    {
+      key: "vorname",
+      label: "VORNAME",
+      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
+      ariaLabel: "Vorname des Spielers"
+    },
+    {
+      key: "nachname",
+      label: "NACHNAME",
+      class: "min-w-[80px] sm:min-w-[100px] font-semibold",
+      ariaLabel: "Nachname des Spielers"
+    },
+    // In Home.tsx - columns Definition:
+    {
+      key: "instant",
+      label: "ANGEMELDET AM",
+      class: "w-[90px] sm:w-[120px] md:w-[140px] text-xs sm:text-sm **leading-tight** **whitespace-pre-line**",
+      ariaLabel: "Anmeldezeitpunkt"
+    }
+
+  ];
 
   const copyRegisteredPlayers = async () => {
     if (!playersApplies.length) return;
@@ -43,7 +68,7 @@ export default function Home() {
 
     try {
       const registeredPlayers = playersApplies.slice(0, maxPlayers);
-      const playerNames = registeredPlayers.map((p: any) => `${p.vorname} ${p.nachname}`).join("\n");
+      const playerNames = registeredPlayers.map((p: PlayerApplies) => `${p.vorname} ${p.nachname}`).join("\n");
 
       await navigator.clipboard.writeText(playerNames);
 
@@ -95,6 +120,7 @@ export default function Home() {
                 startRange={0} 
                 endRange={maxPlayers} 
                 rows={playersApplies} 
+                columns={columns}
               />
             </div>
 
@@ -103,7 +129,8 @@ export default function Home() {
                 nameOfTable="NACHRÜCKER" 
                 startRange={maxPlayers} 
                 endRange={100} 
-                rows={playersApplies} 
+                rows={playersApplies}
+                columns={columns}
               />
             </div>
           </div>

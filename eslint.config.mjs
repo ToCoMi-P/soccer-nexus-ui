@@ -13,6 +13,9 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    ignores: ["**/*.config.js"]  // ← WICHTIG!
+  }
 ]);
 
 export default eslintConfig;

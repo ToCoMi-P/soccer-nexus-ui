@@ -11,15 +11,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import router from "next/router"
 import { MultiSelect } from "@/components/multi-select";
+import { Player } from "@/lib/Types/Player"
 
 
 export default function ApplyPlayerModal({ players }: { players: Player[] }) {

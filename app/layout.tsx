@@ -7,7 +7,6 @@ import "./globals.css";
 import { siteConfig } from "@/config/site";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
-import Link from "next/link"
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toogle";
 import { ClientFooter } from "@/components/footer";
@@ -43,13 +42,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning> 
       <head />
-      <body> 
+      <body className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}> 
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-          className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`} 
         >
           <ModeToggle />
           <SidebarProvider>
