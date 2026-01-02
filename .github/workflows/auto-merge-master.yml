@@ -1,26 +1,37 @@
 name: Auto Merge Master Weekly
 on:
   schedule:
-    - cron: '0 21 * * 1'  # Montag 21:00 UTC
-  workflow_dispatch:  # Manuell triggerbar
+    - cron: '5 22 * * 1'  # Montag 21:00 UTC
+  workflow_dispatch:     # Manuell testen
 
 jobs:
+  rerun-checks:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: read
+    steps:
+      - name: Re-run checks on dev→master PRs
+        run: |
+          PRs=$(gh pr list --head dev --base master --json number -q '.[].number | tonumber')
+          for PR in $PRs; do
+            echo "Re-running PR #$PR"
+            gh pr checks "$PR" --rerun-all
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   auto-merge:
+    needs: rerun-checks
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
-    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Auto-merge latest dev PR
+      - name: Auto-merge ready dev→master PRs
         uses: devmasx/merge-pull-requests@v1.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          source_branch: 'dev'
+          source_branch: 'develop'
           target_branch: 'master'
           github_token: ${{ secrets.GITHUB_TOKEN }}
           merge_when_ready: true

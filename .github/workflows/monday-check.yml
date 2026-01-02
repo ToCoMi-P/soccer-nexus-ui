@@ -1,0 +1,20 @@
+name: Monday Merge Check
+on:
+  pull_request:
+    branches: [master]  # ← Nur dev→master!
+
+jobs:
+  monday-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Monday 19+ UTC
+        run: |
+          day=$(date +%u)  # 1=Montag
+          hour=$(date +%H) # UTC Stunde
+          if [ $day -eq 1 ] && [ $hour -ge 21 ]; then
+            echo "✅ Monday 21+ UTC OK"
+            exit 0
+          else
+            echo "❌ Wait for Monday 21:00 UTC"
+            exit 1  # Blockiert Merge!
+          fi
