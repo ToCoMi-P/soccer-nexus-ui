@@ -11,6 +11,7 @@ import { PlayerAppliesService } from "@/lib/RESTServices/PlayerAppliesService";
 import { Player } from "@/lib/Types/Player";
 import { PlayerApplies, PlayerAppliesDTO, PlayerAppliesUtlity } from "@/lib/Types/PlayerApplies";
 import { Admin } from "@/lib/Types/Admin";
+import { MatchInfo } from "@/components/MatchInfo";
 
 export default function Home() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -104,6 +105,16 @@ export default function Home() {
             </span>
           </div>
         </header>
+
+        <div className="pb-8 md:pb-12">  {/* ← Abstand UNTEN! */}
+          <MatchInfo 
+            ort="Aloha Halle" 
+            anstosszeit="18:30" 
+            treffzeit="18:15" 
+          />
+        </div>
+
+        
 
         <section className="w-full space-y-4 sm:space-y-6 md:space-y-8 pb-8 sm:pb-12">
           {/* Buttons - FULL WIDTH auf Handy */}
