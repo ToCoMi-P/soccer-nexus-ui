@@ -1,11 +1,27 @@
-import "@/styles/globals.css";
-import { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
+import "./globals.css";
+
+/////////////////////////
+
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
-import { Providers } from "./providers";
-import { Navbar } from "@/components/navbar";
-import { Link } from "@heroui/link";
-import clsx from "clsx";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+import { ThemeProvider } from "@/components/theme-provider";
+import { ModeToggle } from "@/components/mode-toogle";
+import { ClientFooter } from "@/components/footer";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -18,34 +34,33 @@ export const metadata: Metadata = {
   }
 };
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" }
-  ]
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="de" suppressHydrationWarning className="scroll-smooth">
+    <html lang="en" suppressHydrationWarning> 
       <head />
-      <body className={clsx("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
-        <Providers>
-          <div className="relative flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <footer className="w-full py-3 border-t border-gray-700/50 bg-gray-900/50">
-              <div className="container mx-auto px-4 text-center">
-                <Link isExternal className="flex items-center justify-center gap-1 text-gray-400 hover:text-gray-300 text-sm" aria-label="Copyright Information">
-                  <span>&copy; {new Date().getFullYear()}</span>
-                  <span className="text-green-500 font-medium">{siteConfig.name}</span>
-                  <span>All rights reserved.</span>
-                </Link>
-              </div>
-            </footer>
-          </div>
-        </Providers>
+      <body className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}> 
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ModeToggle />
+          <SidebarProvider>
+            <AppSidebar />
+            <div className="flex flex-col flex-1 min-h-screen">
+              <SidebarTrigger />
+              <main className="flex-1 p-4">{children}</main>
+              <ClientFooter />
+            </div>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+

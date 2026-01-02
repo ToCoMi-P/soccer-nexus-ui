@@ -1,55 +1,101 @@
-import React, { FormEvent } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Select, SelectItem } from "@heroui/react";
+"use client"
 
-export default function ApplyPlayerModal({ players }: { players: any[] }) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+import * as React from "react"
+import { useState, FormEvent } from "react"
+
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { MultiSelect } from "@/components/multi-select";
+import { Player } from "@/lib/Types/Player"
+
+
+export default function ApplyPlayerModal({ players }: { players: Player[] }) {
+  const [open, setOpen] = useState(false)
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    event.preventDefault()
 
-    await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/playersapplies", {
-      method: "POST",
-      body: formData
-    });
+    const formData = new FormData(event.currentTarget)
+    // ausgewählte Spieler ids hinzufügen
+    selectedPlayers.forEach((id) => formData.append("selectedPlayers", id))
 
-    window.location.reload();
+    await fetch(
+      process.env.NEXT_PUBLIC_API_BASE_URL + "/playersapplies",
+      {
+        method: "POST",
+        body: formData,
+      }
+    )
+
+
+
+    window.location.reload()
   }
 
   return (
     <>
-      <Button color="primary" variant="solid" onPress={onOpen} className="text-xs sm:text-sm font-medium" size="sm" aria-label="Spieler anmelden">
+      <Button
+        onClick={() => setOpen(true)}
+        className="text-xs sm:text-sm font-medium"
+        size="sm"
+        aria-label="Spieler anmelden"
+      >
         Anmelden
       </Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} placement="center" className="max-w-[95vw]" size="sm">
-        <ModalContent>
-          {(onClose) => (
-            <form onSubmit={onSubmit}>
-              <ModalHeader className="border-b border-gray-200 dark:border-gray-700 p-3">
-                <h3 className="text-sm sm:text-base font-bold">Spieler anmelden</h3>
-              </ModalHeader>
-              <ModalBody className="p-3">
-                <Select selectionMode="multiple" name="selectedPlayers" label="Spieler auswählen" labelPlacement="outside" placeholder="Spieler auswählen" className="max-w-full" size="sm" aria-label="Spieler auswählen">
-                  {players.map((player) => (
-                    <SelectItem key={player.id} textValue={`${player.vorname} ${player.nachname}`} className="text-xs sm:text-sm">
-                      {`${player.vorname} ${player.nachname}`}
-                    </SelectItem>
-                  ))}
-                </Select>
-              </ModalBody>
-              <ModalFooter className="border-t border-gray-200 dark:border-gray-700 p-2">
-                <Button color="danger" variant="light" onPress={onClose} size="sm" className="text-xs sm:text-sm" aria-label="Abbrechen">
-                  Abbrechen
-                </Button>
-                <Button color="primary" type="submit" size="sm" className="text-xs sm:text-sm" aria-label="Spieler anmelden">
-                  Anmelden
-                </Button>
-              </ModalFooter>
-            </form>
-          )}
-        </ModalContent>
-      </Modal>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-[95vw] sm:max-w-sm">
+          <form onSubmit={onSubmit}>
+            <DialogHeader className="border-b border-gray-200 dark:border-gray-700 p-3">
+              <DialogTitle className="text-sm sm:text-base font-bold">
+                Spieler anmelden
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="p-3 space-y-2">
+              {/* Label manuell, da shadcn-Select selbst kein label-Prop hat */}
+              <label className="text-xs sm:text-sm font-medium">
+                Spieler auswählen
+              </label>
+
+              {/* Einfaches Multi-Select mit Dropdown + Chips / Text */}
+              <MultiSelect
+                options={players.map(p => ({ value: p.id, label: `${p.vorname} ${p.nachname}` }))}
+                onValueChange={setSelectedPlayers}
+                value={selectedPlayers}
+              />
+            </div>
+
+            <DialogFooter className="border-t border-gray-200 dark:border-gray-700 p-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-xs sm:text-sm"
+                aria-label="Abbrechen"
+                onClick={() => setOpen(false)}
+              >
+                Abbrechen
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                className="text-xs sm:text-sm"
+                aria-label="Spieler anmelden"
+              >
+                Anmelden
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
-  );
+  )
 }

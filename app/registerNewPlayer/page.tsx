@@ -2,12 +2,10 @@
 
 import React, {useEffect, useState} from "react";
 import RegisterPlayerModal from "@/components/RegisterPlayerModal";
-import PlayerTables from "@/components/PlayerTables";
+import PlayerTables, { ColumnConfig } from "@/components/PlayerTables";
 import WarteMeldung from "@/components/WarteMeldung";
 
 export default function RegisterNewPlayerPage() {
-
-	//const BASE_URL = "http://localhost:8080";
 
 	const [players, setPlayers] = useState(null);
 	const [isLoading, setLoading] = useState(true)
@@ -23,10 +21,10 @@ export default function RegisterNewPlayerPage() {
 			.catch(error => console.log(error));
 	}, [])
 
-	const columns = [
+	const columns: ColumnConfig[] = [
 		{
 			key: "id",
-			label: "NR"
+			label: "NR",
 		},
 		{
 			key: "vorname",
@@ -45,7 +43,7 @@ export default function RegisterNewPlayerPage() {
 		<div>
 			<RegisterPlayerModal/>
 
-			<PlayerTables nameOfTable="Tabelle aller bereits registrierten Spieler" startRange={0} endRange={200} columns={columns} rows={players}></PlayerTables>
+			<PlayerTables nameOfTable="Tabelle aller bereits registrierten Spieler" startRange={0} endRange={200} rows={players} columns={columns}></PlayerTables>
 		</div>
 	);
 }

@@ -1,0 +1,27 @@
+name: Auto Merge Master Weekly
+on:
+  schedule:
+    - cron: '0 21 * * 1'  # Montag 21:00 UTC
+  workflow_dispatch:  # Manuell triggerbar
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Auto-merge latest dev PR
+        uses: devmasx/merge-pull-requests@v1.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          source_branch: 'dev'
+          target_branch: 'master'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          merge_when_ready: true
+          merge_method: 'merge'
