@@ -5,6 +5,7 @@ on:
 
 jobs:
   monday-check:
+    if: github.head_ref == 'develop'  # Nur dev→master PRs!
     runs-on: ubuntu-latest
     steps:
       - name: Check Monday 19+ UTC
