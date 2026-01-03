@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Check Monday 19+ UTC
         run: |
-          day=$(date +%u)  # 1=Montag
+          day=$(date +%u)  # 1 = Montag
           hour=$(date +%H) # UTC Stunde
           if [ $day -eq 1 ] && [ $hour -ge 21 ]; then
             echo "✅ Monday 21+ UTC OK"
