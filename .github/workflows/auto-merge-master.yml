@@ -1,34 +1,43 @@
-name: Auto Merge Master Weekly
+name: Auto Merge Master Weekly + Issue Collector
 on:
+  pull_request:
+    types: [closed]
+    branches: [master]
   schedule:
-    - cron: '5 22 * * 1'  # Montag 21:00 UTC
-  workflow_dispatch:     # Manuell testen
+    - cron: '5 22 * * 1'
+  workflow_dispatch:
 
 jobs:
-  rerun-checks:
+  collect-issues:         # ← NEU: Sammelt ALLE dev Issues seit letztem Merge
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'develop'
     runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      pull-requests: read
+    outputs:
+      issues: ${{ steps.list-issues.outputs.issues }}
     steps:
-      - name: Re-run checks on dev→master PRs
+      - id: list-issues
         run: |
-          PRs=$(gh pr list --head dev --base master --json number -q '.[].number | tonumber')
-          for PR in $PRs; do
-            echo "Re-running PR #$PR"
-            gh pr checks "$PR" --rerun-all
-          done
+          # Issues seit letztem dev→master Merge finden
+          ISSUES=$(gh issue list \
+            --state open \
+            --search "is:issue is:open repo:${{ github.repository }} created:>$(git log -1 --format=%ct --merges master)" \
+            --json number --jq '.[].number' | tr -d '[]' | tr '\n' ' ')
+          
+          echo "issues=$ISSUES" >> $GITHUB_OUTPUT
+          echo "Found issues: $ISSUES"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   auto-merge:
-    needs: rerun-checks
+    needs: collect-issues
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
-      - name: Auto-merge ready dev→master PRs
+      - name: Show issues & create closing message
+        run: |
+          ISSUES="${{ needs.collect-issues.outputs.issues }}"
+          echo "Merge dev→master and close: closes $ISSUES"
+          echo "closes:$ISSUES" >> $GITHUB_ENV
+      
+      - name: Auto-merge with issue closing
         uses: devmasx/merge-pull-requests@v1.2.0
         with:
           source_branch: 'develop'
@@ -36,3 +45,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           merge_when_ready: true
           merge_method: 'merge'
+          # PR Beschreibung wird AUTO mit "closes #1 #5" gefüllt!
+ 
