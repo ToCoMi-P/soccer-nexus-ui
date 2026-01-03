@@ -1,7 +1,7 @@
 name: Monday Merge Check
 on:
   pull_request:
-    branches: [master]  # ← Nur dev→master!
+    branches: [master]  # ← Nur dev→master!!
 
 jobs:
   monday-check:
