@@ -1,27 +1,49 @@
-name: Auto Merge Master Weekly
+name: Auto Merge Master Weekly + Issue Collector
 on:
+  pull_request:
+    types: [closed]
+    branches: [master]
   schedule:
-    - cron: '0 21 * * 1'  # Montag 21:00 UTC
-  workflow_dispatch:  # Manuell triggerbar
+    - cron: '5 22 * * 1'
+  workflow_dispatch:
 
 jobs:
-  auto-merge:
+  collect-issues:         # ← NEU: Sammelt ALLE dev Issues seit letztem Merge
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'develop'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    
+    outputs:
+      issues: ${{ steps.list-issues.outputs.issues }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Auto-merge latest dev PR
-        uses: devmasx/merge-pull-requests@v1.2.0
+      - id: list-issues
+        run: |
+          # Issues seit letztem dev→master Merge finden
+          ISSUES=$(gh issue list \
+            --state open \
+            --search "is:issue is:open repo:${{ github.repository }} created:>$(git log -1 --format=%ct --merges master)" \
+            --json number --jq '.[].number' | tr -d '[]' | tr '\n' ' ')
+          
+          echo "issues=$ISSUES" >> $GITHUB_OUTPUT
+          echo "Found issues: $ISSUES"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  auto-merge:
+    needs: collect-issues
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show issues & create closing message
+        run: |
+          ISSUES="${{ needs.collect-issues.outputs.issues }}"
+          echo "Merge dev→master and close: closes $ISSUES"
+          echo "closes:$ISSUES" >> $GITHUB_ENV
+      
+      - name: Auto-merge with issue closing
+        uses: devmasx/merge-pull-requests@v1.2.0
         with:
-          source_branch: 'dev'
+          source_branch: 'develop'
           target_branch: 'master'
           github_token: ${{ secrets.GITHUB_TOKEN }}
           merge_when_ready: true
           merge_method: 'merge'
+          # PR Beschreibung wird AUTO mit "closes #1 #5" gefüllt!
+ 

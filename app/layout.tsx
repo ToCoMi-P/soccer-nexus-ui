@@ -42,10 +42,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning> 
       <head />
-      <body className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}> 
+      <body className={`dark ${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}> 
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
