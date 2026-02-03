@@ -10,6 +10,12 @@ jobs:
     steps:
       - name: Check Monday 19+ UTC
         run: |
+          # Wenn Branch-Name "hotfix" enthält: immer OK und direkt beenden
+          if echo "${GITHUB_HEAD_REF}" | grep -qi "hotfix"; then
+            echo "✅ Hotfix-Branch – Monday-Check übersprungen"
+            exit 0
+          fi
+
           day=$(date +%u)  # 1 = Montag
           hour=$(date +%H) # UTC Stunde
           if [ $day -eq 1 ] && [ $hour -ge 21 ]; then
